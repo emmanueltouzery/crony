@@ -5,11 +5,9 @@ import java.time.LocalDateTime;
 import javaslang.collection.Set;
 import javaslang.control.Option;
 
-import jdk.nashorn.internal.objects.annotations.SpecializedConstructor;
-
 public class HourSpec {
 
-    private Set<Integer> hours;
+    private final Set<Integer> hours;
 
     private HourSpec(Set<Integer> hours) {
         this.hours = hours;

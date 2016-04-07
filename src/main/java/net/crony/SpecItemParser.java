@@ -18,6 +18,8 @@ public class SpecItemParser {
                 .map(s -> s.flatMap(Function1.identity()).toSet());
         } else if (value.equals("*")) {
             return Option.of(HashSet.empty());
+        } else if (Try.of(() -> Integer.parseInt(value)).isSuccess()) {
+            return Option.of(HashSet.of(Integer.parseInt(value)));
         } else if (value.startsWith("*/")) {
             return Try.of(() -> buildInterval(Integer.parseInt(value.substring(2)), maxValue)).getOption();
         } else if (value.contains("-")) {

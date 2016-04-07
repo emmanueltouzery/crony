@@ -14,7 +14,7 @@ public class DayOfWeekSpec {
     /**
      * empty means 'any'
      */
-    private Set<DayOfWeek> days;
+    private final Set<DayOfWeek> days;
 
     private DayOfWeekSpec(Set<DayOfWeek> days) {
         this.days = days;
@@ -29,7 +29,7 @@ public class DayOfWeekSpec {
         return SpecItemParser.parseSpecItem(cronSpec, 7)
             .flatMap(intSet -> Option.sequence(intSet.map(parseDow)))
             .map(Seq::toSet)
-            .map(DayOfWeekSpec::new);
+            .flatMap(DayOfWeekSpec::build);
     }
 
     public boolean isMatch(LocalDateTime dateTime) {
