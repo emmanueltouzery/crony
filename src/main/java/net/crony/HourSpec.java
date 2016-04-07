@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import javaslang.collection.Set;
 import javaslang.control.Option;
 
+import jdk.nashorn.internal.objects.annotations.SpecializedConstructor;
+
 public class HourSpec {
 
     private Set<Integer> hours;
@@ -18,6 +20,10 @@ public class HourSpec {
             return Option.none();
         }
         return Option.of(new HourSpec(hours));
+    }
+
+    public static Option<HourSpec> parse(String cronSpec) {
+        return SpecItemParser.parseSpecItem(cronSpec, 23).flatMap(HourSpec::build);
     }
 
     public boolean isMatch(LocalDateTime dateTime) {

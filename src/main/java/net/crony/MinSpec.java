@@ -20,6 +20,10 @@ public class MinSpec {
         return Option.of(new MinSpec(minutes));
     }
 
+    public static Option<MinSpec> parse(String cronSpec) {
+        return SpecItemParser.parseSpecItem(cronSpec, 59).flatMap(MinSpec::build);
+    }
+
     public boolean isMatch(LocalDateTime dateTime) {
         return minutes.isEmpty() || minutes.contains(dateTime.getMinute());
     }

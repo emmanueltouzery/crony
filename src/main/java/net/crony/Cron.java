@@ -6,5 +6,5 @@ public class Cron
     private DayOfMonthSpec dayOfMonthSpec;
     private DayOfWeekSpec dayOfWeekSpec;
     private HourSpec hourSpec;
-    private MinSpec minFreq;
+    private MinSpec minSpec;
 }

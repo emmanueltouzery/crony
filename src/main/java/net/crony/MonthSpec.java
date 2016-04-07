@@ -18,6 +18,10 @@ public class MonthSpec {
         return Option.of(new MonthSpec(months));
     }
 
+    public static Option<DayOfMonthSpec> parse(String cronSpec) {
+        return SpecItemParser.parseSpecItem(cronSpec, 12).flatMap(MonthSpec::build);
+    }
+
     public boolean isMatch(LocalDateTime dateTime) {
         return months.isEmpty() || months.contains(dateTime.getMonth());
     }
