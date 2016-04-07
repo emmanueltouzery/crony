@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import javaslang.collection.Set;
 import javaslang.control.Option;
+import javaslang.control.Validation;
 
 public class HourSpec {
 
@@ -13,14 +14,14 @@ public class HourSpec {
         this.hours = hours;
     }
 
-    public static Option<HourSpec> build(Set<Integer> hours) {
+    public static Validation<String, HourSpec> build(Set<Integer> hours) {
         if (hours.exists(m -> m < 0 || m > 23)) {
-            return Option.none();
+            return Validation.invalid("Some hours are out of range");
         }
-        return Option.of(new HourSpec(hours));
+        return Validation.valid(new HourSpec(hours));
     }
 
-    public static Option<HourSpec> parse(String cronSpec) {
+    public static Validation<String, HourSpec> parse(String cronSpec) {
         return SpecItemParser.parseSpecItem(cronSpec, 23).flatMap(HourSpec::build);
     }
 

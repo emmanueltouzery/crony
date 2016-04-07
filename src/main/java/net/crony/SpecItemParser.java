@@ -3,37 +3,41 @@ package net.crony;
 import javaslang.Function1;
 import javaslang.Tuple2;
 import javaslang.collection.HashSet;
+import javaslang.collection.List;
 import javaslang.collection.Set;
 import javaslang.control.Option;
 import javaslang.control.Try;
+import javaslang.control.Validation;
 
 public class SpecItemParser {
 
-    public static Option<Set<Integer>> parseSpecItem(String value, int maxValue) {
+    public static Validation<String, Set<Integer>> parseSpecItem(String value, int maxValue) {
         if (value.contains(",")) {
-            Set<Option<Set<Integer>>> parsedList = HashSet.of(value.split(","))
+            Set<Validation<String, Set<Integer>>> parsedList = HashSet.of(value.split(","))
                 .map(v -> parseSpecItem(v, maxValue));
-            return Option
-                .sequence(parsedList)
+            return Javaslang
+                .sequenceS(parsedList)
                 .map(s -> s.flatMap(Function1.identity()).toSet());
         } else if (value.equals("*")) {
-            return Option.of(HashSet.empty());
+            return Validation.valid(HashSet.empty());
         } else if (Try.of(() -> Integer.parseInt(value)).isSuccess()) {
-            return Option.of(HashSet.of(Integer.parseInt(value)));
+            return Validation.valid(HashSet.of(Integer.parseInt(value)));
         } else if (value.startsWith("*/")) {
-            return Try.of(() -> buildInterval(Integer.parseInt(value.substring(2)), maxValue)).getOption();
+            return Try.of(() -> buildInterval(Integer.parseInt(value.substring(2)), maxValue))
+                .transform(Javaslang.tryToValidation("Can't parse */ rule"));
         } else if (value.contains("-")) {
             return toIntPair(value.split("-")).map(p -> HashSet.rangeClosed(p._1, p._2));
         }
-        return Option.none();
+        return Validation.invalid("Value improperly formatted: " + value);
     }
 
-    private static Option<Tuple2<Integer, Integer>> toIntPair(String[] elements) {
+    private static Validation<String, Tuple2<Integer, Integer>> toIntPair(String[] elements) {
         if (elements.length != 2) {
-            return Option.none();
+            return Validation.invalid("Invalid range, expected 2 items, got " + elements.length);
         }
         Tuple2<String, String> strPair = new Tuple2(elements[0], elements[1]);
-        return Try.of(() -> strPair.map(Integer::parseInt, Integer::parseInt)).getOption();
+        return Try.of(() -> strPair.map(Integer::parseInt, Integer::parseInt))
+            .transform(Javaslang.tryToValidation("Invalid range, item is not a number"));
     }
 
     private static Set<Integer> buildInterval(int step, int maxValue) {

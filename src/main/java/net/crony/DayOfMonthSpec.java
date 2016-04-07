@@ -3,7 +3,7 @@ package net.crony;
 import java.time.LocalDateTime;
 
 import javaslang.collection.Set;
-import javaslang.control.Option;
+import javaslang.control.Validation;
 
 public class DayOfMonthSpec {
 
@@ -13,14 +13,14 @@ public class DayOfMonthSpec {
         this.monthDays = monthDays;
     }
 
-    public static Option<DayOfMonthSpec> build(Set<Integer> monthDays) {
+    public static Validation<String, DayOfMonthSpec> build(Set<Integer> monthDays) {
         if (monthDays.exists(m -> m < 0 || m > 31)) {
-            return Option.none();
+            return Validation.invalid("A month has an out of range value");
         }
-        return Option.of(new DayOfMonthSpec(monthDays));
+        return Validation.valid(new DayOfMonthSpec(monthDays));
     }
 
-    public static Option<DayOfMonthSpec> parse(String cronSpec) {
+    public static Validation<String, DayOfMonthSpec> parse(String cronSpec) {
         return SpecItemParser.parseSpecItem(cronSpec, 31).flatMap(DayOfMonthSpec::build);
     }
 

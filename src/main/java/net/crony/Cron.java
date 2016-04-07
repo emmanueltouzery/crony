@@ -1,6 +1,7 @@
 package net.crony;
 
 import javaslang.control.Option;
+import javaslang.control.Validation;
 
 public class Cron
 {
@@ -10,11 +11,11 @@ public class Cron
     public final HourSpec hourSpec;
     public final MinSpec minSpec;
 
-    private Cron(MonthSpec monthSpec,
-                 DayOfMonthSpec dayOfMonthSpec,
-                 DayOfWeekSpec dayOfWeekSpec,
-                 HourSpec hourSpec,
-                 MinSpec minSpec) {
+    public Cron(MinSpec minSpec,
+                HourSpec hourSpec,
+                DayOfMonthSpec dayOfMonthSpec,
+                MonthSpec monthSpec,
+                DayOfWeekSpec dayOfWeekSpec) {
         this.monthSpec = monthSpec;
         this.dayOfMonthSpec = dayOfMonthSpec;
         this.dayOfWeekSpec = dayOfWeekSpec;
@@ -22,16 +23,17 @@ public class Cron
         this.minSpec = minSpec;
     }
 
-    public static Option<Cron> parseCronString(String cronString) {
+    public static Validation<String, Cron> parseCronString(String cronString) {
         String[] pieces = cronString.split(" ");
         if (pieces.length != 5) {
-            return Option.none();
+            return Validation.invalid("Expected 5 rules, got " + pieces.length);
         }
-        return MinSpec.parse(pieces[0])
-            .flatMap(min -> HourSpec.parse(pieces[1])
-                     .flatMap(hour -> DayOfMonthSpec.parse(pieces[2])
-                              .flatMap(dayOfMonth -> MonthSpec.parse(pieces[3])
-                                       .flatMap(month -> DayOfWeekSpec.parse(pieces[4])
-                                                .map(dayOfWeek -> new Cron(month, dayOfMonth, dayOfWeek, hour, min))))));
+        return Validation.combine(
+            MinSpec.parse(pieces[0]),
+            HourSpec.parse(pieces[1]),
+            DayOfMonthSpec.parse(pieces[2]),
+            MonthSpec.parse(pieces[3]),
+            DayOfWeekSpec.parse(pieces[4]))
+            .ap(Cron::new).leftMap(l -> l.mkString(", "));
     }
 }
