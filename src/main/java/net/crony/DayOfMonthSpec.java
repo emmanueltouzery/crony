@@ -7,7 +7,7 @@ import javaslang.control.Option;
 
 public class DayOfMonthSpec {
 
-    private final Set<Integer> monthDays;
+    public final Set<Integer> monthDays;
 
     private DayOfMonthSpec(Set<Integer> monthDays) {
         this.monthDays = monthDays;

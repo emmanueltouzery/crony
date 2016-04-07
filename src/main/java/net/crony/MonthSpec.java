@@ -11,7 +11,7 @@ import javaslang.control.Try;
 
 public class MonthSpec {
 
-    private final Set<Month> months;
+    public final Set<Month> months;
 
     private MonthSpec(Set<Month> months) {
         this.months = months;

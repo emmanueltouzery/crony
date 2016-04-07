@@ -14,7 +14,7 @@ public class DayOfWeekSpec {
     /**
      * empty means 'any'
      */
-    private final Set<DayOfWeek> days;
+    public final Set<DayOfWeek> days;
 
     private DayOfWeekSpec(Set<DayOfWeek> days) {
         this.days = days;

@@ -7,7 +7,7 @@ import javaslang.control.Option;
 
 public class MinSpec {
 
-    private final Set<Integer> minutes;
+    public final Set<Integer> minutes;
 
     private MinSpec(Set<Integer> minutes) {
         this.minutes = minutes;

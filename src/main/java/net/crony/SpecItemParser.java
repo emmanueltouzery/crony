@@ -23,7 +23,7 @@ public class SpecItemParser {
         } else if (value.startsWith("*/")) {
             return Try.of(() -> buildInterval(Integer.parseInt(value.substring(2)), maxValue)).getOption();
         } else if (value.contains("-")) {
-            return toIntPair(value.split("-")).map(p -> HashSet.range(p._1, p._2));
+            return toIntPair(value.split("-")).map(p -> HashSet.rangeClosed(p._1, p._2));
         }
         return Option.none();
     }
@@ -37,6 +37,6 @@ public class SpecItemParser {
     }
 
     private static Set<Integer> buildInterval(int step, int maxValue) {
-        return HashSet.rangeBy(0, maxValue, step);
+        return HashSet.rangeClosedBy(0, maxValue, step);
     }
 }

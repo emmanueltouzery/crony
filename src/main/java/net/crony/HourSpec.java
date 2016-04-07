@@ -7,7 +7,7 @@ import javaslang.control.Option;
 
 public class HourSpec {
 
-    private final Set<Integer> hours;
+    public final Set<Integer> hours;
 
     private HourSpec(Set<Integer> hours) {
         this.hours = hours;

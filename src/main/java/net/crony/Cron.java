@@ -4,11 +4,11 @@ import javaslang.control.Option;
 
 public class Cron
 {
-    private MonthSpec monthSpec;
-    private DayOfMonthSpec dayOfMonthSpec;
-    private DayOfWeekSpec dayOfWeekSpec;
-    private HourSpec hourSpec;
-    private MinSpec minSpec;
+    public final MonthSpec monthSpec;
+    public final DayOfMonthSpec dayOfMonthSpec;
+    public final DayOfWeekSpec dayOfWeekSpec;
+    public final HourSpec hourSpec;
+    public final MinSpec minSpec;
 
     private Cron(MonthSpec monthSpec,
                  DayOfMonthSpec dayOfMonthSpec,
