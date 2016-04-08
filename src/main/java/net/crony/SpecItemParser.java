@@ -33,8 +33,6 @@ public class SpecItemParser {
                          "Invalid range, one item is not a number: " + rangeStr));
     }
 
-    // this is borderline to move to JParsec but don't want to
-    // take in a dependency for so littl.
     private static Validation<String, Set<Integer>> parseSlash(String value, int maxValue) {
         return Javaslang.splitValidate(value, "/", 2)
             .flatMap(elements -> parseSlashLeft(elements[0], maxValue)
