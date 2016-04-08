@@ -1,6 +1,7 @@
 package net.crony;
 
 import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.time.Month;
 
 import javaslang.collection.List;
@@ -58,7 +59,33 @@ public class Cron
                        dayOfMonthSpec.monthDays,
                        monthSpec.monthsIntSet(),
                        dayOfWeekSpec.daysOfWeekIntSet())
-            .map(set -> { if (set.isEmpty()) { return "*"; } else { return set.mkString(","); } })
+            .map(set -> {
+                    if (set.isEmpty()) { return "*"; }
+                    else { return set.mkString(","); } })
             .mkString(" ");
+    }
+
+    public boolean isMatch(LocalDateTime dateTime) {
+        return minSpec.isMatch(dateTime) &&
+            hourSpec.isMatch(dateTime) &&
+            dayOfMonthSpec.isMatch(dateTime) &&
+            monthSpec.isMatch(dateTime) &&
+            dayOfWeekSpec.isMatch(dateTime);
+    }
+
+    public LocalDateTime getNextExecutionDate(LocalDateTime base) {
+        LocalDateTime cur = base;
+        while (!isMatch(cur)) {
+            cur = cur.plusMinutes(1);
+        }
+        return cur;
+    }
+
+    public LocalDateTime getPreviousExecutionDate(LocalDateTime base) {
+        LocalDateTime cur = base;
+        while (!isMatch(cur)) {
+            cur = cur.minusMinutes(1);
+        }
+        return cur;
     }
 }
