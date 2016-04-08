@@ -24,16 +24,14 @@ public class Cron
     }
 
     public static Validation<String, Cron> parseCronString(String cronString) {
-        String[] pieces = cronString.split(" ");
-        if (pieces.length != 5) {
-            return Validation.invalid("Expected 5 rules, got " + pieces.length);
-        }
-        return Validation.combine(
-            MinSpec.parse(pieces[0]),
-            HourSpec.parse(pieces[1]),
-            DayOfMonthSpec.parse(pieces[2]),
-            MonthSpec.parse(pieces[3]),
-            DayOfWeekSpec.parse(pieces[4]))
-            .ap(Cron::new).leftMap(l -> l.mkString(", "));
+        return Javaslang.splitValidate(cronString, " ", 5)
+            .flatMap(pieces ->
+                     Validation.combine(
+                         MinSpec.parse(pieces[0]),
+                         HourSpec.parse(pieces[1]),
+                         DayOfMonthSpec.parse(pieces[2]),
+                         MonthSpec.parse(pieces[3]),
+                         DayOfWeekSpec.parse(pieces[4]))
+                     .ap(Cron::new).leftMap(l -> l.mkString(", ")));
     }
 }

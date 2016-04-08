@@ -3,10 +3,7 @@ package net.crony;
 import javaslang.Function1;
 import javaslang.Tuple2;
 import javaslang.collection.HashSet;
-import javaslang.collection.List;
 import javaslang.collection.Set;
-import javaslang.control.Option;
-import javaslang.control.Try;
 import javaslang.control.Validation;
 
 public class SpecItemParser {
@@ -30,28 +27,19 @@ public class SpecItemParser {
     }
 
     private static Validation<String, Tuple2<Integer,Integer>> parseRange(String rangeStr) {
-        String[] elements = rangeStr.split("-");
-        if (elements.length != 2) {
-            return Validation.invalid("Invalid range, expected 2 items, got " + elements.length);
-        }
-        Tuple2<String, String> strPair = new Tuple2<>(elements[0], elements[1]);
-        return Javaslang.tryValidation(
-            () -> strPair.map(Integer::parseInt, Integer::parseInt),
-            "Invalid range, item is not a number: " + strPair);
+        return Javaslang.splitValidate(rangeStr, "-", 2)
+            .flatMap(elements -> Javaslang.tryValidation(
+                         () -> new Tuple2<>(Integer.parseInt(elements[0]), Integer.parseInt(elements[1])),
+                         "Invalid range, one item is not a number: " + rangeStr));
     }
 
     // this is borderline to move to JParsec but don't want to
     // take in a dependency for so littl.
     private static Validation<String, Set<Integer>> parseSlash(String value, int maxValue) {
-        String[] elements = value.split("/");
-        if (elements.length != 2) {
-            return Validation.invalid("Expected 2 elements in a / rule, got " + elements.length);
-        }
-        Validation<String,Integer> intervalValidation = Javaslang.tryValidation(
-            () -> Integer.parseInt(elements[1]), "Can't parse " + elements[1]);
-        return Validation.combine(parseSlashLeft(elements[0], maxValue), intervalValidation).ap(
-            (minMax, interval) -> HashSet.rangeClosedBy(minMax._1, minMax._2, interval))
-            .leftMap(l -> l.mkString(", ")).map(HashSet::narrow);
+        return Javaslang.splitValidate(value, "/", 2)
+            .flatMap(elements -> parseSlashLeft(elements[0], maxValue)
+                     .flatMap(minMax -> Javaslang.tryValidation(() -> Integer.parseInt(elements[1]), "Can't parse " + elements[1])
+                              .map(interval -> HashSet.rangeClosedBy(minMax._1, minMax._2, interval))));
     }
 
     private static Validation<String, Tuple2<Integer,Integer>> parseSlashLeft(String rangeString, int maxValue) {

@@ -27,4 +27,12 @@ public class Javaslang {
         Traversable<Validation<List<String>, T>> items2 = items.map(v -> v.leftMap(List::of));
         return Validation.sequence(items2).leftMap(l -> l.mkString(", "));
     }
+
+    public static Validation<String,String[]> splitValidate(String str, String separator, int count) {
+        String[] items = str.split(separator);
+        if (items.length != count) {
+            return Validation.invalid(String.format("Invalid range, expected %d items, got %d", count, items.length));
+        }
+        return Validation.valid(items);
+    }
 }
