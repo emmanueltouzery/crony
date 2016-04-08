@@ -3,7 +3,6 @@ package net.crony;
 import java.time.LocalDateTime;
 
 import javaslang.collection.Set;
-import javaslang.control.Option;
 import javaslang.control.Validation;
 
 public class HourSpec {

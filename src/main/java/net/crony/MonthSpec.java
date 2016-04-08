@@ -4,10 +4,9 @@ import java.time.LocalDateTime;
 import java.time.Month;
 
 import javaslang.Function1;
-import javaslang.collection.List;
+import javaslang.collection.Array;
 import javaslang.collection.Seq;
 import javaslang.collection.Set;
-import javaslang.control.Try;
 import javaslang.control.Validation;
 
 public class MonthSpec {
@@ -29,6 +28,10 @@ public class MonthSpec {
             .flatMap(intSet -> Javaslang.sequenceS(intSet.map(parseMonth)))
             .map(Seq::toSet)
             .flatMap(MonthSpec::build);
+    }
+
+    public Set<Integer> monthsIntSet() {
+        return months.map(month -> Array.of(Month.values()).indexOf(month)+1);
     }
 
     public boolean isMatch(LocalDateTime dateTime) {

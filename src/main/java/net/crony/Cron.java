@@ -1,6 +1,6 @@
 package net.crony;
 
-import javaslang.control.Option;
+import javaslang.collection.List;
 import javaslang.control.Validation;
 
 public class Cron
@@ -33,5 +33,15 @@ public class Cron
                          MonthSpec.parse(pieces[3]),
                          DayOfWeekSpec.parse(pieces[4]))
                      .ap(Cron::new).leftMap(l -> l.mkString(", ")));
+    }
+
+    public String toCronString() {
+        return List.of(minSpec.minutes,
+                       hourSpec.hours,
+                       dayOfMonthSpec.monthDays,
+                       monthSpec.monthsIntSet(),
+                       dayOfWeekSpec.daysOfWeekIntSet())
+            .map(set -> { if (set.isEmpty()) { return "*"; } else { return set.mkString(","); } })
+            .mkString(" ");
     }
 }

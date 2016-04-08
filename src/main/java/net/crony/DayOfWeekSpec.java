@@ -4,11 +4,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
 import javaslang.Function1;
-import javaslang.collection.List;
-import javaslang.collection.Set;
+import javaslang.collection.Array;
 import javaslang.collection.Seq;
-import javaslang.control.Option;
-import javaslang.control.Try;
+import javaslang.collection.Set;
 import javaslang.control.Validation;
 
 public class DayOfWeekSpec {
@@ -33,6 +31,10 @@ public class DayOfWeekSpec {
             .flatMap(intSet -> Javaslang.sequenceS(intSet.map(parseDow)))
             .map(Seq::toSet)
             .flatMap(DayOfWeekSpec::build);
+    }
+
+    public Set<Integer> daysOfWeekIntSet() {
+        return days.map(day -> Array.of(DayOfWeek.values()).indexOf(day)+1);
     }
 
     public boolean isMatch(LocalDateTime dateTime) {
