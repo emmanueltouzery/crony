@@ -2,22 +2,31 @@ package net.crony;
 
 import java.time.DayOfWeek;
 import java.time.Month;
+import java.util.function.Supplier;
 
 import javaslang.collection.HashSet;
-import javaslang.control.Option;
 import javaslang.control.Validation;
 
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class ParseTest
 {
+    private void assertTrueS(Supplier<String> msgSupplier, boolean test) {
+        if (!test) {
+            fail(msgSupplier.get());
+        } else {
+            assertTrue(true);
+        }
+    }
+
     @Test
     public void parseSimplePattern() {
-        Option<Cron> parsed = Cron.parseCronString("0 8 * * 1").toOption();
-        assertTrue(parsed.isDefined());
+        Validation<String, Cron> parsed = Cron.parseCronString("0 8 * * 1");
+        assertTrueS(() -> parsed.getError(), parsed.isValid());
         assertEquals(HashSet.of(0), parsed.get().minSpec.minutes);
         assertEquals(HashSet.of(8), parsed.get().hourSpec.hours);
         assertEquals(HashSet.empty(), parsed.get().dayOfMonthSpec.monthDays);
@@ -27,14 +36,25 @@ public class ParseTest
 
     @Test
     public void parseMixedPattern() {
-        Option<Cron> parsed = Cron.parseCronString("*/15 3,5,8 1,12 6 3-5").toOption();
-        assertTrue(parsed.isDefined());
+        Validation<String, Cron> parsed = Cron.parseCronString("*/15 3,5,8 1,12 6 3-5");
+        assertTrueS(() -> parsed.getError(), parsed.isValid());
         assertEquals(HashSet.of(0, 15, 30, 45), parsed.get().minSpec.minutes);
         assertEquals(HashSet.of(3, 5, 8), parsed.get().hourSpec.hours);
         assertEquals(HashSet.of(1, 12), parsed.get().dayOfMonthSpec.monthDays);
         assertEquals(HashSet.of(Month.JUNE), parsed.get().monthSpec.months);
         assertEquals(HashSet.of(DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY),
                      parsed.get().dayOfWeekSpec.days);
+    }
+
+    @Test
+    public void parseComplicated() {
+        Validation<String, Cron> parsed = Cron.parseCronString("1,2,3,5,20-25,30-35,59 0-23/2 31 12 *");
+        assertTrueS(() -> parsed.getError(), parsed.isValid());
+        assertEquals(HashSet.of(1,2,3,5,20,21,22,23,24,25,30,31,32,33,34,35,59), parsed.get().minSpec.minutes);
+        assertEquals(HashSet.of(0,2,4,6,8,10,12,14,16,18,20,22), parsed.get().hourSpec.hours);
+        assertEquals(HashSet.of(31), parsed.get().dayOfMonthSpec.monthDays);
+        assertEquals(HashSet.of(Month.DECEMBER), parsed.get().monthSpec.months);
+        assertEquals(HashSet.empty(), parsed.get().dayOfWeekSpec.days);
     }
 
     @Test

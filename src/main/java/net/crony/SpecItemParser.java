@@ -15,32 +15,55 @@ public class SpecItemParser {
         if (value.contains(",")) {
             Set<Validation<String, Set<Integer>>> parsedList = HashSet.of(value.split(","))
                 .map(v -> parseSpecItem(v, maxValue));
-            return Javaslang
-                .sequenceS(parsedList)
+            return Javaslang.sequenceS(parsedList)
                 .map(s -> s.flatMap(Function1.identity()).toSet());
         } else if (value.equals("*")) {
             return Validation.valid(HashSet.empty());
         } else if (Try.of(() -> Integer.parseInt(value)).isSuccess()) {
             return Validation.valid(HashSet.of(Integer.parseInt(value)));
-        } else if (value.startsWith("*/")) {
-            return Try.of(() -> buildInterval(Integer.parseInt(value.substring(2)), maxValue))
-                .transform(Javaslang.tryToValidation("Can't parse */ rule"));
+        } else if (value.contains("/")) {
+            return parseSlash(value, maxValue);
         } else if (value.contains("-")) {
-            return toIntPair(value.split("-")).map(p -> HashSet.rangeClosed(p._1, p._2));
+            return parseRange(value)
+                .map(p -> HashSet.rangeClosed(p._1, p._2));
         }
         return Validation.invalid("Value improperly formatted: " + value);
     }
 
-    private static Validation<String, Tuple2<Integer, Integer>> toIntPair(String[] elements) {
+    private static Validation<String, Tuple2<Integer,Integer>> parseRange(String rangeStr) {
+        String[] elements = rangeStr.split("-");
         if (elements.length != 2) {
             return Validation.invalid("Invalid range, expected 2 items, got " + elements.length);
         }
-        Tuple2<String, String> strPair = new Tuple2(elements[0], elements[1]);
-        return Try.of(() -> strPair.map(Integer::parseInt, Integer::parseInt))
-            .transform(Javaslang.tryToValidation("Invalid range, item is not a number"));
+        Tuple2<String, String> strPair = new Tuple2<>(elements[0], elements[1]);
+        return Javaslang.tryValidation(
+            () -> strPair.map(Integer::parseInt, Integer::parseInt),
+            "Invalid range, item is not a number: " + strPair);
     }
 
-    private static Set<Integer> buildInterval(int step, int maxValue) {
-        return HashSet.rangeClosedBy(0, maxValue, step);
+    // this is borderline to move to JParsec but don't want to
+    // take in a dependency for so littl.
+    private static Validation<String, Set<Integer>> parseSlash(String value, int maxValue) {
+        String[] elements = value.split("/");
+        if (elements.length != 2) {
+            return Validation.invalid("Expected 2 elements in a / rule, got " + elements.length);
+        }
+        Validation<String,Integer> intervalValidation = Javaslang.tryValidation(
+            () -> Integer.parseInt(elements[1]), "Can't parse " + elements[1]);
+        return Validation.combine(parseSlashLeft(elements[0], maxValue), intervalValidation).ap(
+            (minMax, interval) -> HashSet.rangeClosedBy(minMax._1, minMax._2, interval))
+            .leftMap(l -> l.mkString(", ")).map(HashSet::narrow);
+    }
+
+    private static Validation<String, Tuple2<Integer,Integer>> parseSlashLeft(String rangeString, int maxValue) {
+        if (rangeString.contains("-")) {
+            return parseRange(rangeString);
+        } else if (rangeString.equals("*")) {
+            return Validation.valid(new Tuple2<>(0, maxValue));
+        } else {
+            return Javaslang.tryValidation(() -> Integer.parseInt(rangeString),
+                                           "Can't parse as integer: " + rangeString)
+                .map(s -> new Tuple2<>(s, maxValue));
+        }
     }
 }

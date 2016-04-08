@@ -9,8 +9,7 @@ import javaslang.control.Validation;
 
 public class Javaslang {
 
-    // TODO: another one that gets the message from the exception.
-    public static <T, U> Function1<Try<U>, Validation<T, U>> tryToValidation(T left) {
+    private static <T, U> Function1<Try<U>, Validation<T, U>> tryToValidation(T left) {
         return tryValue -> {
             if (tryValue.isSuccess()) {
                 return Validation.valid(tryValue.get());
@@ -18,6 +17,10 @@ public class Javaslang {
                 return Validation.invalid(left);
             }
         };
+    }
+
+    public static <E, T> Validation<E,T> tryValidation(Try.CheckedSupplier<? extends T> supplier, E left) {
+        return Try.of(supplier).transform(Javaslang.tryToValidation(left));
     }
 
     public static <T> Validation<String, Seq<T>> sequenceS(Traversable<Validation<String, T>> items) {

@@ -27,8 +27,8 @@ public class DayOfWeekSpec {
     }
 
     public static Validation<String, DayOfWeekSpec> parse(String cronSpec) {
-        Function1<Integer, Validation<String, DayOfWeek>> parseDow = item -> Try.of(() -> DayOfWeek.of(item))
-            .transform(Javaslang.tryToValidation("Invalid day of week"));
+        Function1<Integer, Validation<String, DayOfWeek>> parseDow = item ->
+            Javaslang.tryValidation(() -> DayOfWeek.of(item), "Invalid day of week");
         return SpecItemParser.parseSpecItem(cronSpec, 7)
             .flatMap(intSet -> Javaslang.sequenceS(intSet.map(parseDow)))
             .map(Seq::toSet)
