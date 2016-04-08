@@ -19,15 +19,14 @@ public class SpecItemParser {
                 .map(s -> s.flatMap(Function1.identity()).toSet());
         } else if (value.equals("*")) {
             return Validation.valid(HashSet.empty());
-        } else if (Try.of(() -> Integer.parseInt(value)).isSuccess()) {
-            return Validation.valid(HashSet.of(Integer.parseInt(value)));
         } else if (value.contains("/")) {
             return parseSlash(value, maxValue);
         } else if (value.contains("-")) {
             return parseRange(value)
                 .map(p -> HashSet.rangeClosed(p._1, p._2));
         }
-        return Validation.invalid("Value improperly formatted: " + value);
+        return Javaslang.tryValidation(() -> HashSet.of(Integer.parseInt(value)),
+                                       "Error parsing " + value + " as integer.");
     }
 
     private static Validation<String, Tuple2<Integer,Integer>> parseRange(String rangeStr) {
