@@ -1,6 +1,10 @@
 package net.crony;
 
+import java.time.DayOfWeek;
+import java.time.Month;
+
 import javaslang.collection.List;
+import javaslang.collection.Set;
 import javaslang.control.Validation;
 
 public class Cron
@@ -11,7 +15,7 @@ public class Cron
     public final HourSpec hourSpec;
     public final MinSpec minSpec;
 
-    public Cron(MinSpec minSpec,
+    private Cron(MinSpec minSpec,
                 HourSpec hourSpec,
                 DayOfMonthSpec dayOfMonthSpec,
                 MonthSpec monthSpec,
@@ -21,6 +25,19 @@ public class Cron
         this.dayOfWeekSpec = dayOfWeekSpec;
         this.hourSpec = hourSpec;
         this.minSpec = minSpec;
+    }
+
+    public static Validation<String, Cron> build(
+        Set<Integer> minutes, Set<Integer> hours,
+        Set<Integer> daysOfMonth, Set<Month> months,
+        Set<DayOfWeek> daysOfWeek) {
+        return Validation.combine(
+            MinSpec.build(minutes),
+            HourSpec.build(hours),
+            DayOfMonthSpec.build(daysOfMonth),
+            MonthSpec.build(months),
+            DayOfWeekSpec.build(daysOfWeek))
+            .ap(Cron::new).leftMap(l -> l.mkString(", "));
     }
 
     public static Validation<String, Cron> parseCronString(String cronString) {

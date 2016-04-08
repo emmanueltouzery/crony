@@ -14,13 +14,12 @@ public class FormatTest {
 
     @Test
     public void simpleFormat() {
-        Validation<String, Cron> cronV = Validation.combine(
-            MinSpec.build(HashSet.empty()),
-            HourSpec.build(HashSet.of(1,2)),
-            DayOfMonthSpec.build(HashSet.empty()),
-            MonthSpec.build(HashSet.of(Month.JANUARY,Month.MARCH)),
-            DayOfWeekSpec.build(HashSet.of(DayOfWeek.MONDAY, DayOfWeek.SUNDAY)))
-            .ap(Cron::new).leftMap(l->l.mkString(", "));
+        Validation<String, Cron> cronV = Cron.build(
+            HashSet.empty(),
+            HashSet.of(1,2),
+            HashSet.empty(),
+            HashSet.of(Month.JANUARY,Month.MARCH),
+            HashSet.of(DayOfWeek.MONDAY, DayOfWeek.SUNDAY));
         assertTrue(cronV.isValid());
         assertEquals("* 1,2 * 1,3 1,7", cronV.get().toCronString());
     }
