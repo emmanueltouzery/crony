@@ -2,11 +2,29 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.emmanueltouzery</groupId>
-    <artifactId>crony-lib</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>crony</artifactId>
+    <packaging>pom</packaging>
     <version>1.0.0</version>
-    <name>crony-lib</name>
-    <url>http://maven.apache.org</url>
+    <name>crony</name>
+    <description>A java library to work with cron specifications</description>
+    <url>https://github.com/emmanueltouzery/crony</url>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>emmanueltouzery</id>
+            <url>https://github.com/emmanueltouzery</url>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:git@github.com:emmanueltouzery/crony.git</connection>
+        <developerConnection>scm:git:git@github.com:emmanueltouzery/crony.git</developerConnection>
+        <url>git@github.com:emmanueltouzery/crony.git</url>
+    </scm>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
