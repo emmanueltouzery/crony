@@ -1,6 +1,6 @@
 package net.crony;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.Month;
 
 import javaslang.Function1;
@@ -34,7 +34,7 @@ public class MonthSpec {
         return months.map(month -> Array.of(Month.values()).indexOf(month)+1);
     }
 
-    public boolean isMatch(LocalDateTime dateTime) {
+    public boolean isMatch(ZonedDateTime dateTime) {
         return months.isEmpty() || months.contains(dateTime.getMonth());
     }
 }

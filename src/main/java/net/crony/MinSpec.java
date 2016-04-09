@@ -1,6 +1,6 @@
 package net.crony;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import javaslang.collection.Set;
 import javaslang.control.Validation;
@@ -24,7 +24,7 @@ public class MinSpec {
         return SpecItemParser.parseSpecItem(cronSpec, 59).flatMap(MinSpec::build);
     }
 
-    public boolean isMatch(LocalDateTime dateTime) {
+    public boolean isMatch(ZonedDateTime dateTime) {
         return minutes.isEmpty() || minutes.contains(dateTime.getMinute());
     }
 }

@@ -1,7 +1,7 @@
 package net.crony;
 
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import javaslang.Function1;
 import javaslang.collection.Array;
@@ -37,7 +37,7 @@ public class DayOfWeekSpec {
         return days.map(day -> Array.of(DayOfWeek.values()).indexOf(day)+1);
     }
 
-    public boolean isMatch(LocalDateTime dateTime) {
+    public boolean isMatch(ZonedDateTime dateTime) {
         return days.isEmpty() || days.contains(dateTime.getDayOfWeek());
     }
 }

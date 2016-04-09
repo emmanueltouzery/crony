@@ -1,6 +1,6 @@
 package net.crony;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import javaslang.collection.Set;
 import javaslang.control.Validation;
@@ -24,7 +24,7 @@ public class DayOfMonthSpec {
         return SpecItemParser.parseSpecItem(cronSpec, 31).flatMap(DayOfMonthSpec::build);
     }
 
-    public boolean isMatch(LocalDateTime dateTime) {
+    public boolean isMatch(ZonedDateTime dateTime) {
         return monthDays.isEmpty() || monthDays.contains(dateTime.getDayOfMonth());
     }
 }

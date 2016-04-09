@@ -1,7 +1,7 @@
 package net.crony;
 
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.Month;
 
 import javaslang.collection.List;
@@ -65,7 +65,7 @@ public class Cron
             .mkString(" ");
     }
 
-    public boolean isMatch(LocalDateTime dateTime) {
+    public boolean isMatch(ZonedDateTime dateTime) {
         return minSpec.isMatch(dateTime) &&
             hourSpec.isMatch(dateTime) &&
             dayOfMonthSpec.isMatch(dateTime) &&
