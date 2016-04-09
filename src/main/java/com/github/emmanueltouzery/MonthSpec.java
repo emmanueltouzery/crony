@@ -1,4 +1,4 @@
-package net.crony;
+package com.github.emmanueltouzery;
 
 import java.time.ZonedDateTime;
 import java.time.Month;

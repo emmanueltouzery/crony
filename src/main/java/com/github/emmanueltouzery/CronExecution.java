@@ -1,4 +1,4 @@
-package net.crony;
+package com.github.emmanueltouzery;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
