@@ -2,16 +2,24 @@ package net.crony;
 
 import javaslang.Function1;
 import javaslang.Tuple2;
+import javaslang.collection.HashMap;
 import javaslang.collection.HashSet;
+import javaslang.collection.Map;
 import javaslang.collection.Set;
 import javaslang.control.Validation;
 
 /*package*/ class SpecItemParser {
 
-    /*package*/ static Validation<String, Set<Integer>> parseSpecItem(String value, int maxValue) {
+    /*package*/ static Validation<String, Set<Integer>> parseSpecItem(
+        String value, int maxValue) {
+        return parseSpecItem(value, maxValue, HashMap.empty());
+    }
+
+    /*package*/ static Validation<String, Set<Integer>> parseSpecItem(
+        String value, int maxValue, Map<String, Integer> stringMap) {
         if (value.contains(",")) {
             Set<Validation<String, Set<Integer>>> parsedList = HashSet.of(value.split(","))
-                .map(v -> parseSpecItem(v, maxValue));
+                .map(v -> parseSpecItem(v, maxValue, stringMap));
             return Javaslang.sequenceS(parsedList)
                 .map(s -> s.flatMap(Function1.identity()).toSet());
         } else if (value.equals("*")) {
@@ -21,6 +29,8 @@ import javaslang.control.Validation;
         } else if (value.contains("-")) {
             return parseRange(value)
                 .map(p -> HashSet.rangeClosed(p._1, p._2));
+        } else if (stringMap.containsKey(value)) {
+            return Validation.valid(HashSet.of(stringMap.get(value).get()));
         }
         return Javaslang.validationParseInt(value).map(HashSet::of);
     }

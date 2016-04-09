@@ -34,8 +34,10 @@ public class DayOfWeekSpec {
             .flatMap(DayOfWeekSpec::build);
     }
 
-    public Set<Integer> daysOfWeekIntSet() {
-        return days.map(day -> Array.of(DayOfWeek.values()).indexOf(day)+1);
+    public Set<String> daysOfWeekFormattedSet() {
+        return days
+            .map(day -> Array.of(DayOfWeek.values()).indexOf(day)+1)
+            .map(Object::toString);
     }
 
     public boolean isMatch(ZonedDateTime dateTime) {

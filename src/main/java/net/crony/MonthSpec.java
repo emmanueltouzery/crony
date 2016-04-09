@@ -31,8 +31,10 @@ public class MonthSpec {
             .flatMap(MonthSpec::build);
     }
 
-    public Set<Integer> monthsIntSet() {
-        return months.map(month -> Array.of(Month.values()).indexOf(month)+1);
+    public Set<String> monthsFormattedSet() {
+        return months
+            .map(month -> Array.of(Month.values()).indexOf(month)+1)
+            .map(Object::toString);
     }
 
     public boolean isMatch(ZonedDateTime dateTime) {

@@ -56,9 +56,9 @@ public class Cron
     public String toCronString() {
         return List.of(minSpec.minutes,
                        hourSpec.hours,
-                       dayOfMonthSpec.monthDays,
-                       monthSpec.monthsIntSet(),
-                       dayOfWeekSpec.daysOfWeekIntSet())
+                       dayOfMonthSpec.daysOfMonthFormattedSet(),
+                       monthSpec.monthsFormattedSet(),
+                       dayOfWeekSpec.daysOfWeekFormattedSet())
             .map(set -> {
                     if (set.isEmpty()) { return "*"; }
                     else { return set.mkString(","); } })

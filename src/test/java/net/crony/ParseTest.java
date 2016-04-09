@@ -48,11 +48,11 @@ public class ParseTest
 
     @Test
     public void parseComplicated() {
-        Validation<String, Cron> parsed = Cron.parseCronString("1,2,3,5,20-25,30-35,59 0-23/2 31 12 *");
+        Validation<String, Cron> parsed = Cron.parseCronString("1,2,3,5,20-25,30-35,59 0-23/2 31,L 12 *");
         assertTrueS(() -> parsed.getError(), parsed.isValid());
         assertEquals(HashSet.of(1,2,3,5,20,21,22,23,24,25,30,31,32,33,34,35,59), parsed.get().minSpec.minutes);
         assertEquals(HashSet.of(0,2,4,6,8,10,12,14,16,18,20,22), parsed.get().hourSpec.hours);
-        assertEquals(HashSet.of(31), parsed.get().dayOfMonthSpec.monthDays);
+        assertEquals(HashSet.of(31, DayOfMonthSpec.LAST_DAY_OF_MONTH), parsed.get().dayOfMonthSpec.monthDays);
         assertEquals(HashSet.of(Month.DECEMBER), parsed.get().monthSpec.months);
         assertEquals(HashSet.empty(), parsed.get().dayOfWeekSpec.days);
     }

@@ -17,11 +17,10 @@ public class FormatTest {
         Validation<String, Cron> cronV = Cron.build(
             HashSet.empty(),
             HashSet.of(1,2),
-            HashSet.empty(),
+            HashSet.of(1, DayOfMonthSpec.LAST_DAY_OF_MONTH),
             HashSet.of(Month.JANUARY,Month.MARCH),
             HashSet.of(DayOfWeek.MONDAY, DayOfWeek.SUNDAY));
         assertTrue(cronV.isValid());
-        assertEquals("* 1,2 * 1,3 1,7", cronV.get().toCronString());
+        assertEquals("* 1,2 L,1 1,3 1,7", cronV.get().toCronString());
     }
-
 }
