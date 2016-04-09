@@ -23,7 +23,8 @@ public class MonthSpec {
 
     public static Validation<String, MonthSpec> parse(String cronSpec) {
         Function1<Integer, Validation<String, Month>> parseMonth = item ->
-            Javaslang.tryValidation(() -> Month.of(item), "Invalid month");
+            Javaslang.tryValidation(() -> Month.of(item),
+                                    String.format("Invalid month: %d", item));
         return SpecItemParser.parseSpecItem(cronSpec, 12)
             .flatMap(intSet -> Javaslang.sequenceS(intSet.map(parseMonth)))
             .map(Seq::toSet)

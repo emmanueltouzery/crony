@@ -68,27 +68,27 @@ public class ParseTest
     public void hourOutOfRangeParseShouldFail() {
         Validation<String, Cron> parsed = Cron.parseCronString("0 28 * * 1");
         assertTrue(parsed.isInvalid());
-        assertEquals("Some hours are out of range", parsed.getError());
+        assertEquals("Invalid hour", parsed.getError());
     }
 
     @Test
     public void dayMonthOutOfRangeParseShouldFail() {
         Validation<String, Cron> parsed = Cron.parseCronString("0 8 40 * 1");
         assertTrue(parsed.isInvalid());
-        assertEquals("A month has an out of range value", parsed.getError());
+        assertEquals("Invalid day of the month", parsed.getError());
     }
 
     @Test
     public void monthOutOfRangeParseShouldFail() {
         Validation<String, Cron> parsed = Cron.parseCronString("0 8 * 18 1");
         assertTrue(parsed.isInvalid());
-        assertEquals("Invalid month", parsed.getError());
+        assertEquals("Invalid month: 18", parsed.getError());
     }
 
     @Test
         public void dayOfWeekOutOfRangeParseShouldFail() {
         Validation<String, Cron> parsed = Cron.parseCronString("0 8 * * 8");
         assertTrue(parsed.isInvalid());
-        assertEquals("Invalid day of week", parsed.getError());
+        assertEquals("Invalid day of week: 8", parsed.getError());
     }
 }

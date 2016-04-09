@@ -15,7 +15,7 @@ public class DayOfMonthSpec {
 
     public static Validation<String, DayOfMonthSpec> build(Set<Integer> monthDays) {
         if (monthDays.exists(m -> m < 0 || m > 31)) {
-            return Validation.invalid("A month has an out of range value");
+            return Validation.invalid("Invalid day of the month");
         }
         return Validation.valid(new DayOfMonthSpec(monthDays));
     }

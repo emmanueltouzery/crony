@@ -15,7 +15,7 @@ public class HourSpec {
 
     public static Validation<String, HourSpec> build(Set<Integer> hours) {
         if (hours.exists(m -> m < 0 || m > 23)) {
-            return Validation.invalid("Some hours are out of range");
+            return Validation.invalid("Invalid hour");
         }
         return Validation.valid(new HourSpec(hours));
     }
