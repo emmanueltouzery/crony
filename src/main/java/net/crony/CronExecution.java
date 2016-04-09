@@ -3,11 +3,24 @@ package net.crony;
 import java.time.ZonedDateTime;
 
 import javaslang.Function1;
+import javaslang.collection.Stream;
 
 public class CronExecution {
 
+    public static Stream<ZonedDateTime> getNextExecutionDates(Cron cron, ZonedDateTime base) {
+        return Stream
+            .iterate(base, d -> getNextExecutionDate(cron, d))
+            .drop(1);
+    }
+
     public static ZonedDateTime getNextExecutionDate(Cron cron, ZonedDateTime base) {
         return getExecutionDateDirection(cron, base, true);
+    }
+
+    public static Stream<ZonedDateTime> getPreviousExecutionDates(Cron cron, ZonedDateTime base) {
+        return Stream
+            .iterate(base, d -> getPreviousExecutionDate(cron, d))
+            .drop(1);
     }
 
     public static ZonedDateTime getPreviousExecutionDate(Cron cron, ZonedDateTime base) {
@@ -23,6 +36,9 @@ public class CronExecution {
             d -> d.withHour(23).withMinute(59);
         Function1<ZonedDateTime, ZonedDateTime> newDayReset =
             forward ? newDayResetFwd: newDayResetBack;
+
+        // if we are right on an execution date right now, we'll return the next one.
+        date = date.plusMinutes(increment);
 
         // first find the next matching day
         while (!isDayMatch(cron, date)) {
