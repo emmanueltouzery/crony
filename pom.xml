@@ -31,6 +31,23 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <excludePackageNames>org.codehaus.jparsec.internal.*</excludePackageNames>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-docs</id>
+                    </execution>
+                    <execution>
+                        <id>generate-javadoc-site-report</id>
+                        <phase>site</phase>
+                        <goals><goal>javadoc</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

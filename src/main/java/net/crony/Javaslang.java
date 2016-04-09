@@ -7,7 +7,7 @@ import javaslang.collection.Traversable;
 import javaslang.control.Try;
 import javaslang.control.Validation;
 
-public class Javaslang {
+/*package*/ class Javaslang {
 
     private static <T, U> Function1<Try<U>, Validation<T, U>> tryToValidation(T left) {
         return tryValue -> {
