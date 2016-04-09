@@ -72,20 +72,4 @@ public class Cron
             monthSpec.isMatch(dateTime) &&
             dayOfWeekSpec.isMatch(dateTime);
     }
-
-    public LocalDateTime getNextExecutionDate(LocalDateTime base) {
-        LocalDateTime cur = base;
-        while (!isMatch(cur)) {
-            cur = cur.plusMinutes(1);
-        }
-        return cur;
-    }
-
-    public LocalDateTime getPreviousExecutionDate(LocalDateTime base) {
-        LocalDateTime cur = base;
-        while (!isMatch(cur)) {
-            cur = cur.minusMinutes(1);
-        }
-        return cur;
-    }
 }

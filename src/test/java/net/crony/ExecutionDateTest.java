@@ -11,7 +11,17 @@ public class ExecutionDateTest {
     public void nextExecutionDate() {
         assertEquals(
             LocalDateTime.of(2014, 12, 1, 8, 0),
-            Cron.parseCronString("0 8 * * 1").get()
-            .getNextExecutionDate(LocalDateTime.of(2014, 11, 30, 0, 0)));
+            CronExecution.getNextExecutionDate(
+                Cron.parseCronString("0 8 * * 1").get(),
+                LocalDateTime.of(2014, 11, 30, 0, 0)));
+    }
+
+    @Test
+    public void previousExecutionDate() {
+        assertEquals(
+            LocalDateTime.of(2014, 11, 24, 8, 0),
+            CronExecution.getPreviousExecutionDate(
+                Cron.parseCronString("0 8 * * 1").get(),
+                LocalDateTime.of(2014, 12, 1, 0, 0)));
     }
 }
