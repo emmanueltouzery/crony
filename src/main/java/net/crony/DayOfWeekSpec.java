@@ -9,10 +9,15 @@ import javaslang.collection.Seq;
 import javaslang.collection.Set;
 import javaslang.control.Validation;
 
+/**
+ * Part of the cron specification describing the day of the week.
+ */
 public class DayOfWeekSpec {
 
     /**
-     * empty means 'any'
+     * The days of the week at which the spec triggers.
+     * Contains 0-8 (sunday is both 0 and 8).
+     * Empty means any day is accepted.
      */
     public final Set<DayOfWeek> days;
 
@@ -20,11 +25,17 @@ public class DayOfWeekSpec {
         this.days = days;
     }
 
+    /**
+     * Build a {@link DayOfWeekSpec} from the list of days of the week
+     * that it matches.
+     * @param days Accepted days of the week, or empty set for 'accept all'
+     * @return a new {@link DayOfWeekSpec} or an error message.
+     */
     public static Validation<String, DayOfWeekSpec> build(Set<DayOfWeek> days) {
         return Validation.valid(new DayOfWeekSpec(days));
     }
 
-    public static Validation<String, DayOfWeekSpec> parse(String cronSpec) {
+    /*package*/ static Validation<String, DayOfWeekSpec> parse(String cronSpec) {
         Function1<Integer, Validation<String, DayOfWeek>> parseDow = item ->
             Javaslang.tryValidation(() -> item == 0 ? DayOfWeek.SUNDAY : DayOfWeek.of(item),
                                     String.format("Invalid day of week: %d", item));
@@ -34,13 +45,13 @@ public class DayOfWeekSpec {
             .flatMap(DayOfWeekSpec::build);
     }
 
-    public Set<String> daysOfWeekFormattedSet() {
+    /*package*/ Set<String> daysOfWeekFormattedSet() {
         return days
             .map(day -> Array.of(DayOfWeek.values()).indexOf(day)+1)
             .map(Object::toString);
     }
 
-    public boolean isMatch(ZonedDateTime dateTime) {
+    /*package*/ boolean isMatch(ZonedDateTime dateTime) {
         return days.isEmpty() || days.contains(dateTime.getDayOfWeek());
     }
 }

@@ -34,9 +34,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <excludePackageNames>org.codehaus.jparsec.internal.*</excludePackageNames>
-                </configuration>
                 <executions>
                     <execution>
                         <id>attach-docs</id>

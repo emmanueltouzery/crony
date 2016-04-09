@@ -8,12 +8,34 @@ import javaslang.collection.List;
 import javaslang.collection.Set;
 import javaslang.control.Validation;
 
+/**
+ * The cron class represents a cron specification.
+ */
 public class Cron
 {
+    /**
+     * the month part of the cron specification
+     */
     public final MonthSpec monthSpec;
+
+    /**
+     * the day of month part of the cron specification
+     */
     public final DayOfMonthSpec dayOfMonthSpec;
+
+    /**
+     * the day of week part of the cron specification
+     */
     public final DayOfWeekSpec dayOfWeekSpec;
+
+    /**
+     * the hour of day part of the cron specification
+     */
     public final HourSpec hourSpec;
+
+    /**
+     * the minute of day part of the cron specification
+     */
     public final MinSpec minSpec;
 
     private Cron(MinSpec minSpec,
@@ -28,6 +50,16 @@ public class Cron
         this.minSpec = minSpec;
     }
 
+    /**
+     * Programmatically reate a Cron specification.
+     * @param minutes minutes of the hour (0-59)
+     * @param hours hours of the day (0-23)
+     * @param daysOfMonth the days of the month (1-31). To specify the
+     *        last day of the month, use {@link DayOfMonthSpec#LAST_DAY_OF_MONTH}
+     * @param months months of the year
+     * @param daysOfWeek the days of the week
+     * @return a Cron object or an error message
+     */
     public static Validation<String, Cron> build(
         Set<Integer> minutes, Set<Integer> hours,
         Set<Integer> daysOfMonth, Set<Month> months,
@@ -41,6 +73,11 @@ public class Cron
             .ap(Cron::new).leftMap(l -> l.mkString(", "));
     }
 
+    /**
+     * Build a Cron specification from a cron string specification
+     * @param cronString a cron string specification to parse
+     * @return a Cron object or an error message
+     */
     public static Validation<String, Cron> parseCronString(String cronString) {
         return Javaslang.splitValidate(cronString, " ", 5)
             .flatMap(pieces ->
@@ -53,6 +90,10 @@ public class Cron
                      .ap(Cron::new).leftMap(l -> l.mkString(", ")));
     }
 
+    /**
+     * Generate a cron string specification from the cron specification.
+     * @return a cron string specification as used in crontab
+     */
     public String toCronString() {
         return List.of(minSpec.minutes,
                        hourSpec.hours,
@@ -65,6 +106,13 @@ public class Cron
             .mkString(" ");
     }
 
+    /**
+     * Will return true if the date time given is a match
+     * for this cron specification (in other words if
+     * execution would trigger at that exact date and time)
+     * @param dateTime the date time to test
+     * @return true if the cron would execute at that dateTime
+     */
     public boolean isMatch(ZonedDateTime dateTime) {
         return minSpec.isMatch(dateTime) &&
             hourSpec.isMatch(dateTime) &&
