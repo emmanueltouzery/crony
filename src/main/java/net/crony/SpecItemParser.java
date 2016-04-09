@@ -6,9 +6,9 @@ import javaslang.collection.HashSet;
 import javaslang.collection.Set;
 import javaslang.control.Validation;
 
-public class SpecItemParser {
+/*package*/ class SpecItemParser {
 
-    public static Validation<String, Set<Integer>> parseSpecItem(String value, int maxValue) {
+    /*package*/ static Validation<String, Set<Integer>> parseSpecItem(String value, int maxValue) {
         if (value.contains(",")) {
             Set<Validation<String, Set<Integer>>> parsedList = HashSet.of(value.split(","))
                 .map(v -> parseSpecItem(v, maxValue));
@@ -22,8 +22,7 @@ public class SpecItemParser {
             return parseRange(value)
                 .map(p -> HashSet.rangeClosed(p._1, p._2));
         }
-        return Javaslang.tryValidation(() -> HashSet.of(Integer.parseInt(value)),
-                                       "Error parsing " + value + " as integer.");
+        return Javaslang.validationParseInt(value).map(HashSet::of);
     }
 
     private static Validation<String, Tuple2<Integer,Integer>> parseRange(String rangeStr) {
@@ -36,7 +35,7 @@ public class SpecItemParser {
     private static Validation<String, Set<Integer>> parseSlash(String value, int maxValue) {
         return Javaslang.splitValidate(value, "/", 2)
             .flatMap(elements -> parseSlashLeft(elements[0], maxValue)
-                     .flatMap(minMax -> Javaslang.tryValidation(() -> Integer.parseInt(elements[1]), "Can't parse " + elements[1])
+                     .flatMap(minMax -> Javaslang.validationParseInt(elements[1])
                               .map(interval -> HashSet.rangeClosedBy(minMax._1, minMax._2, interval))));
     }
 
@@ -46,8 +45,7 @@ public class SpecItemParser {
         } else if (rangeString.equals("*")) {
             return Validation.valid(new Tuple2<>(0, maxValue));
         } else {
-            return Javaslang.tryValidation(() -> Integer.parseInt(rangeString),
-                                           "Can't parse as integer: " + rangeString)
+            return Javaslang.validationParseInt(rangeString)
                 .map(s -> new Tuple2<>(s, maxValue));
         }
     }

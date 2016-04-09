@@ -35,4 +35,9 @@ public class Javaslang {
         }
         return Validation.valid(items);
     }
+
+    public static Validation<String, Integer> validationParseInt(String value) {
+        return tryValidation(() -> Integer.parseInt(value),
+                             String.format("Error parsing %s as integer.", value));
+    }
 }
