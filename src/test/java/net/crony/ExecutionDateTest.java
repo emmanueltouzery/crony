@@ -53,4 +53,11 @@ public class ExecutionDateTest {
                 Cron.parseCronString("0 6,8 * * 1").get(),
                 ZonedDateTime.of(2014, 12, 1, 6, 0, 0, 0, ZoneId.of("UTC"))).take(3).toList());
     }
+
+    @Test
+    public void gapToClosest() {
+        assertEquals(7200, CronExecution.gapToClosestExecution(
+            Cron.parseCronString("0 6,8 * * 1").get(),
+            ZonedDateTime.of(2014, 12, 1, 6, 0, 0, 0, ZoneId.of("UTC"))).getSeconds());
+    }
 }

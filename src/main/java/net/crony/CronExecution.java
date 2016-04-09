@@ -1,5 +1,6 @@
 package net.crony;
 
+import java.time.Duration;
 import java.time.ZonedDateTime;
 
 import javaslang.Function1;
@@ -25,6 +26,12 @@ public class CronExecution {
 
     public static ZonedDateTime getPreviousExecutionDate(Cron cron, ZonedDateTime base) {
         return getExecutionDateDirection(cron, base, false);
+    }
+
+    public static Duration gapToClosestExecution(Cron cron, ZonedDateTime base) {
+        Duration duration1 = Duration.between(getPreviousExecutionDate(cron, base), base);
+        Duration duration2 = Duration.between(base, getNextExecutionDate(cron, base));
+        return (duration1.getSeconds() < duration2.getSeconds()) ? duration1 : duration2;
     }
 
     private static ZonedDateTime getExecutionDateDirection(
