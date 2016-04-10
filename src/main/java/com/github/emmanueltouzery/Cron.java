@@ -114,7 +114,9 @@ public class Cron
      * @return true if the cron would execute at that dateTime
      */
     public boolean isMatch(ZonedDateTime dateTime) {
-        return minSpec.isMatch(dateTime) &&
+        return dateTime.getSecond() == 0 &&
+            dateTime.getNano() == 0 &&
+            minSpec.isMatch(dateTime) &&
             hourSpec.isMatch(dateTime) &&
             dayOfMonthSpec.isMatch(dateTime) &&
             monthSpec.isMatch(dateTime) &&
