@@ -8,6 +8,8 @@ import javaslang.collection.Map;
 import javaslang.collection.Set;
 import javaslang.control.Validation;
 
+// parsing with jparsec would be neater, but it's such a small-scale
+// parsing, it would be a shame to incur a dependency for that.
 /*package*/ class SpecItemParser {
 
     /*package*/ static Validation<String, Set<Integer>> parseSpecItem(
