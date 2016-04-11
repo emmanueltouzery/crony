@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.emmanueltouzery</groupId>
     <artifactId>crony</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>crony</name>
     <description>A java library to work with cron specifications</description>
     <url>https://github.com/emmanueltouzery/crony</url>
@@ -33,7 +32,8 @@
         <connection>scm:git:git@github.com:emmanueltouzery/crony.git</connection>
         <developerConnection>scm:git:git@github.com:emmanueltouzery/crony.git</developerConnection>
         <url>git@github.com:emmanueltouzery/crony.git</url>
-    </scm>
+      <tag>crony-1.0.0</tag>
+  </scm>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
