@@ -1,4 +1,4 @@
-package com.github.emmanueltouzery;
+package com.github.emmanueltouzery.crony;
 
 import java.time.Year;
 import java.time.ZonedDateTime;

@@ -1,4 +1,4 @@
-package com.github.emmanueltouzery;
+package com.github.emmanueltouzery.crony;
 
 import javaslang.Function1;
 import javaslang.collection.List;
