@@ -81,16 +81,20 @@ public class CronExecution {
     private static ZonedDateTime getExecutionDateDirection(
         Cron cron, ZonedDateTime date, boolean forward) {
         int increment = forward ? 1 : -1;
-        Function1<ZonedDateTime, ZonedDateTime> newDayReset = forward
-            ? d -> d.withHour(0).withMinute(0)
-            : d -> d.withHour(23).withMinute(59);
 
-        // if we are right on an execution date right now, we'll return the next one.
-        date = date.plusMinutes(increment);
+        if (isDayMatch(cron, date)) {
+            // if we are right on an execution date right now, we'll return the next one.
+            date = date.plusMinutes(increment);
+        } else {
+            // will have to go to another day: reset the time.
+            date = forward
+                ? date.plusDays(1).withHour(0).withMinute(0)
+                : date.plusDays(-1).withHour(23).withMinute(59);
+        }
 
         // first find the next matching day
         while (!isDayMatch(cron, date)) {
-            date = newDayReset.apply(date.plusDays(increment));
+            date = date.plusDays(increment);
         }
         // now find the next matching hour
         while (!cron.hourSpec.isMatch(date)) {
