@@ -13,13 +13,27 @@ Besides the standard `cron` format, crony supports also the nonstandard mechanis
 
 ## Code snippets
 
-    Cron.parseCronString("0 8 * * 1");
-    CronExecution.getNextExecutionDate(cron, date)
-    Cron.build(
-            HashSet.empty(),
-            HashSet.of(1,2),
-            HashSet.of(1, DayOfMonthSpec.LAST_DAY_OF_MONTH),
-            HashSet.of(Month.JANUARY,Month.MARCH),
-            HashSet.of(DayOfWeek.MONDAY, DayOfWeek.SUNDAY))
-    cron.toCronString()
-    cron.isMatch(datetime)
+```java
+Cron.parseCronString("0 8 * * 1");
+```
+
+```java
+CronExecution.getNextExecutionDate(cron, date)
+```
+
+```java
+Cron.build(
+        HashSet.empty(),
+        HashSet.of(1,2),
+        HashSet.of(1, DayOfMonthSpec.LAST_DAY_OF_MONTH),
+        HashSet.of(Month.JANUARY,Month.MARCH),
+        HashSet.of(DayOfWeek.MONDAY, DayOfWeek.SUNDAY))
+```
+
+```java
+cron.toCronString()
+```
+
+```java
+cron.isMatch(datetime)
+```
