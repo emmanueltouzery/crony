@@ -4,6 +4,16 @@ Crony is a library to deal with cron scheduler specifictions in java. It can par
 
 [Online Javadoc](http://emmanueltouzery.github.io/crony/apidocs/)
 
+Crony is available on maven-central:
+
+```xml
+<dependency>
+    <groupId>com.github.emmanueltouzery</groupId>
+    <artifactId>crony</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
 Crony is licensed under the `MIT` license, and requires java8. It uses the java8 date time classes.
 
 Crony relies a lot on [javaslang](http://javaslang.io/), and results are most of the time returned using javaslang lists, sets and the javaslang `Validation` construct. Please refer to the Javaslang documentation. Crony also tries to avoid exceptions and instead use optionals and Validation constructs.
