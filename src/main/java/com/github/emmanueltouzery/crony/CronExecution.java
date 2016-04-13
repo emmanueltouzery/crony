@@ -73,6 +73,9 @@ public class CronExecution {
      * @return the gap between the date you give and the closest execution time
      */
     public static Duration gapToClosestExecution(Cron cron, ZonedDateTime base) {
+        if (cron.isMatch(base)) {
+            return Duration.ZERO;
+        }
         Duration duration1 = Duration.between(getPreviousExecutionDate(cron, base), base);
         Duration duration2 = Duration.between(base, getNextExecutionDate(cron, base));
         return (duration1.getSeconds() < duration2.getSeconds()) ? duration1 : duration2;
@@ -84,7 +87,9 @@ public class CronExecution {
 
         if (isDayMatch(cron, date)) {
             // if we are right on an execution date right now, we'll return the next one.
-            date = date.plusMinutes(increment);
+            if (cron.isMatch(date)) {
+                date = date.plusMinutes(increment);
+            }
         } else {
             // will have to go to another day: reset the time.
             date = forward

@@ -1,5 +1,6 @@
 package com.github.emmanueltouzery.crony;
 
+import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
@@ -56,8 +57,15 @@ public class ExecutionDateTest {
 
     @Test
     public void gapToClosest() {
-        assertEquals(7200, CronExecution.gapToClosestExecution(
-            Cron.parseCronString("0 6,8 * * 1").get(),
-            ZonedDateTime.of(2014, 12, 1, 6, 0, 0, 0, ZoneId.of("UTC"))).getSeconds());
+        assertEquals(Duration.ofHours(1), CronExecution.gapToClosestExecution(
+                         Cron.parseCronString("0 6,8 * * 1").get(),
+                         ZonedDateTime.of(2014, 12, 1, 5, 0, 0, 0, ZoneId.of("UTC"))));
+    }
+
+    @Test
+    public void gapToClosestRightOnDate() {
+        assertEquals(Duration.ZERO, CronExecution.gapToClosestExecution(
+                         Cron.parseCronString("0 6,8 * * 1").get(),
+                         ZonedDateTime.of(2014, 12, 1, 6, 0, 0, 0, ZoneId.of("UTC"))));
     }
 }
