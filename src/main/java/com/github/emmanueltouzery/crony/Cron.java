@@ -118,8 +118,19 @@ public class Cron
             dateTime.getNano() == 0 &&
             minSpec.isMatch(dateTime) &&
             hourSpec.isMatch(dateTime) &&
-            dayOfMonthSpec.isMatch(dateTime) &&
-            monthSpec.isMatch(dateTime) &&
-            dayOfWeekSpec.isMatch(dateTime);
+            isDayMatch(dateTime);
+    }
+
+    /*package*/ boolean isDayMatch(ZonedDateTime datetime) {
+        // The day of a command's execution can be specified in the following two fields
+        // — 'day of month', and 'day of week'.  If both fields are restricted
+        // (i.e., do not contain the "*" character),  the
+        // command will be run when either field matches the current time.
+        boolean bothDayMonthWeekSpecified =
+            !dayOfMonthSpec.monthDays.isEmpty() && !dayOfWeekSpec.days.isEmpty();
+        boolean isDayMatch = bothDayMonthWeekSpecified
+            ? dayOfMonthSpec.isMatch(datetime) || dayOfWeekSpec.isMatch(datetime)
+            : dayOfMonthSpec.isMatch(datetime) && dayOfWeekSpec.isMatch(datetime);
+        return monthSpec.isMatch(datetime) && isDayMatch;
     }
 }

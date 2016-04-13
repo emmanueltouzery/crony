@@ -85,7 +85,7 @@ public class CronExecution {
         Cron cron, ZonedDateTime date, boolean forward) {
         int increment = forward ? 1 : -1;
 
-        if (isDayMatch(cron, date)) {
+        if (cron.isDayMatch(date)) {
             // if we are right on an execution date right now, we'll return the next one.
             if (cron.isMatch(date)) {
                 date = date.plusMinutes(increment);
@@ -98,7 +98,7 @@ public class CronExecution {
         }
 
         // first find the next matching day
-        while (!isDayMatch(cron, date)) {
+        while (!cron.isDayMatch(date)) {
             date = date.plusDays(increment);
         }
         // now find the next matching hour
@@ -110,11 +110,5 @@ public class CronExecution {
             date = date.plusMinutes(increment);
         }
         return date;
-    }
-
-    private static boolean isDayMatch(Cron cron, ZonedDateTime datetime) {
-        return cron.dayOfMonthSpec.isMatch(datetime) &&
-            cron.monthSpec.isMatch(datetime) &&
-            cron.dayOfWeekSpec.isMatch(datetime);
     }
 }
