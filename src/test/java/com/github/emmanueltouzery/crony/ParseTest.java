@@ -58,6 +58,15 @@ public class ParseTest
     }
 
     @Test
+    public void parseMonthDayNames() {
+        Validation<String, Cron> parsed = Cron.parseCronString("0 8 * JaN,3,JUL 1,THU,sUN");
+        assertTrueS(() -> parsed.getError(), parsed.isValid());
+        assertEquals(HashSet.of(Month.JANUARY,Month.MARCH,Month.JULY), parsed.get().monthSpec.months);
+        assertEquals(HashSet.of(DayOfWeek.MONDAY, DayOfWeek.THURSDAY, DayOfWeek.SUNDAY),
+                     parsed.get().dayOfWeekSpec.days);
+    }
+
+    @Test
     public void minOutOfRangeParseShouldFail() {
         Validation<String, Cron> parsed = Cron.parseCronString("80 8 * * 1");
         assertTrue(parsed.isInvalid());

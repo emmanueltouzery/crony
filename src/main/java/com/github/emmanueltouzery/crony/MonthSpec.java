@@ -1,12 +1,14 @@
 package com.github.emmanueltouzery.crony;
 
-import java.time.ZonedDateTime;
 import java.time.Month;
+import java.time.ZonedDateTime;
 
 import javaslang.Function1;
 import javaslang.collection.Array;
+import javaslang.collection.Map;
 import javaslang.collection.Seq;
 import javaslang.collection.Set;
+import javaslang.collection.Stream;
 import javaslang.control.Validation;
 
 /**
@@ -34,11 +36,16 @@ public class MonthSpec {
         return Validation.valid(new MonthSpec(months));
     }
 
+    private static final Map<String, Integer> monthMap = Array.of(
+        "jan", "feb", "mar", "apr", "may", "jun",
+        "jul", "aug", "sep", "oct", "nov", "dec")
+        .zip(Stream.from(1)).toMap(Function1.identity());
+
     /*package*/ static Validation<String, MonthSpec> parse(String cronSpec) {
         Function1<Integer, Validation<String, Month>> parseMonth = item ->
             Javaslang.tryValidation(() -> Month.of(item),
                                     String.format("Invalid month: %d", item));
-        return SpecItemParser.parseSpecItem(cronSpec, 12)
+        return SpecItemParser.parseSpecItem(cronSpec.toLowerCase(), 12, monthMap)
             .flatMap(intSet -> Javaslang.sequenceS(intSet.map(parseMonth)))
             .map(Seq::toSet)
             .flatMap(MonthSpec::build);

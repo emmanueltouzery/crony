@@ -5,8 +5,10 @@ import java.time.ZonedDateTime;
 
 import javaslang.Function1;
 import javaslang.collection.Array;
+import javaslang.collection.Map;
 import javaslang.collection.Seq;
 import javaslang.collection.Set;
+import javaslang.collection.Stream;
 import javaslang.control.Validation;
 
 /**
@@ -35,11 +37,15 @@ public class DayOfWeekSpec {
         return Validation.valid(new DayOfWeekSpec(days));
     }
 
+    private static final Map<String, Integer> dayMap = Array.of(
+        "mon", "tue", "wed", "thu", "fri", "sat", "sun")
+        .zip(Stream.from(1)).toMap(Function1.identity());
+
     /*package*/ static Validation<String, DayOfWeekSpec> parse(String cronSpec) {
         Function1<Integer, Validation<String, DayOfWeek>> parseDow = item ->
             Javaslang.tryValidation(() -> item == 0 ? DayOfWeek.SUNDAY : DayOfWeek.of(item),
                                     String.format("Invalid day of week: %d", item));
-        return SpecItemParser.parseSpecItem(cronSpec, 7)
+        return SpecItemParser.parseSpecItem(cronSpec.toLowerCase(), 7, dayMap)
             .flatMap(intSet -> Javaslang.sequenceS(intSet.map(parseDow)))
             .map(Seq::toSet)
             .flatMap(DayOfWeekSpec::build);
