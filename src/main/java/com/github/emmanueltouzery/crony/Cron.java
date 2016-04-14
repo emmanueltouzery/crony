@@ -100,9 +100,7 @@ public class Cron
                        dayOfMonthSpec.daysOfMonthFormattedSet(),
                        monthSpec.monthsFormattedSet(),
                        dayOfWeekSpec.daysOfWeekFormattedSet())
-            .map(set -> {
-                    if (set.isEmpty()) { return "*"; }
-                    else { return set.mkString(","); } })
+            .map(set -> set.isEmpty() ? "*" : set.mkString(","))
             .mkString(" ");
     }
 
