@@ -68,4 +68,13 @@ public class ExecutionDateTest {
                          Cron.parseCronString("0 6,8 * * 1").get(),
                          ZonedDateTime.of(2014, 12, 1, 6, 0, 0, 0, ZoneId.of("UTC"))));
     }
+
+    @Test
+    public void nextExecutionDateNonZeroSecond() {
+        assertEquals(
+            ZonedDateTime.of(2014, 12, 1, 8, 0, 0, 0, ZoneId.of("UTC")),
+            CronExecution.getNextExecutionDate(
+                Cron.parseCronString("0 8 * * 1").get(),
+                ZonedDateTime.of(2014, 11, 30, 0, 0, 12, 0, ZoneId.of("UTC"))));
+    }
 }

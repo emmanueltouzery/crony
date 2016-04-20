@@ -88,13 +88,13 @@ public class CronExecution {
         if (cron.isDayMatch(date)) {
             // if we are right on an execution date right now, we'll return the next one.
             if (cron.isMatch(date)) {
-                date = date.plusMinutes(increment);
+                date = date.plusMinutes(increment).withSecond(0).withNano(0);
             }
         } else {
             // will have to go to another day: reset the time.
             date = forward
-                ? date.plusDays(1).withHour(0).withMinute(0)
-                : date.plusDays(-1).withHour(23).withMinute(59);
+                ? date.plusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0)
+                : date.plusDays(-1).withHour(23).withMinute(59).withSecond(0).withNano(0);
         }
 
         // first find the next matching day
@@ -107,7 +107,7 @@ public class CronExecution {
         }
         // and now the minute
         while (!cron.isMatch(date)) {
-            date = date.plusMinutes(increment);
+            date = date.plusMinutes(increment).withSecond(0).withNano(0);
         }
         return date;
     }
