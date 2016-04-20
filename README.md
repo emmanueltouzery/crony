@@ -10,7 +10,7 @@ Crony is available on maven-central:
 <dependency>
     <groupId>com.github.emmanueltouzery</groupId>
     <artifactId>crony</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
