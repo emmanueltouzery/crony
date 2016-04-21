@@ -21,6 +21,24 @@ public class ExecutionDateTest {
     }
 
     @Test
+    public void nextExecutionDateOther() {
+        assertEquals(
+            ZonedDateTime.of(2014, 4, 22, 10, 0, 0, 0, ZoneId.of("UTC")),
+            CronExecution.getNextExecutionDate(
+                Cron.parseCronString("0 10 * * 1,2,3,4,5,6,7").get(),
+                ZonedDateTime.of(2014, 4, 21, 11, 12, 0, 382, ZoneId.of("UTC"))));
+    }
+
+    @Test
+    public void nextExecutionDatePastLess1h() {
+        assertEquals(
+            ZonedDateTime.of(2014, 4, 21, 10, 15, 0, 0, ZoneId.of("UTC")),
+            CronExecution.getPreviousExecutionDate(
+                Cron.parseCronString("15 10 * * 1,2,3,4,5,6,7").get(),
+                ZonedDateTime.of(2014, 4, 21, 11, 12, 0, 382, ZoneId.of("UTC"))));
+    }
+
+    @Test
     public void nextExecutionDates() {
         List<ZonedDateTime> expected = List.of(
             ZonedDateTime.of(2014, 12, 1, 6, 0, 0, 0, ZoneId.of("UTC")),
@@ -60,6 +78,13 @@ public class ExecutionDateTest {
         assertEquals(Duration.ofHours(1), CronExecution.gapToClosestExecution(
                          Cron.parseCronString("0 6,8 * * 1").get(),
                          ZonedDateTime.of(2014, 12, 1, 5, 0, 0, 0, ZoneId.of("UTC"))));
+    }
+
+    @Test
+    public void gapToClosestBefore() {
+        assertEquals(Duration.ofMinutes(30).plusSeconds(12).plusNanos(10), CronExecution.gapToClosestExecution(
+                         Cron.parseCronString("0 6,8 * * 1").get(),
+                         ZonedDateTime.of(2014, 12, 1, 6, 30, 12, 10, ZoneId.of("UTC"))));
     }
 
     @Test

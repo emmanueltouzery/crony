@@ -3,7 +3,6 @@ package com.github.emmanueltouzery.crony;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
-import javaslang.Function1;
 import javaslang.collection.Stream;
 
 /**
@@ -81,33 +80,51 @@ public class CronExecution {
         return (duration1.getSeconds() < duration2.getSeconds()) ? duration1 : duration2;
     }
 
-    private static ZonedDateTime getExecutionDateDirection(
+    private static ZonedDateTime getNextMatchingDay(
         Cron cron, ZonedDateTime date, boolean forward) {
-        int increment = forward ? 1 : -1;
-
-        if (cron.isDayMatch(date)) {
-            // if we are right on an execution date right now, we'll return the next one.
-            if (cron.isMatch(date)) {
-                date = date.plusMinutes(increment).withSecond(0).withNano(0);
-            }
-        } else {
-            // will have to go to another day: reset the time.
+        while (!cron.isDayMatch(date)) {
             date = forward
                 ? date.plusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0)
                 : date.plusDays(-1).withHour(23).withMinute(59).withSecond(0).withNano(0);
         }
+        return date;
+    }
 
-        // first find the next matching day
-        while (!cron.isDayMatch(date)) {
-            date = date.plusDays(increment);
-        }
-        // now find the next matching hour
+    private static ZonedDateTime getNextMatchingHour(
+        Cron cron, ZonedDateTime date, boolean forward) {
         while (!cron.hourSpec.isMatch(date)) {
-            date = date.plusHours(increment);
+            date = forward
+                ? date.plusHours(1).withMinute(0).withSecond(0).withNano(0)
+                : date.plusHours(-1).withMinute(59).withSecond(0).withNano(0);
         }
-        // and now the minute
+        return date;
+    }
+
+    private static ZonedDateTime getNextMatchingMinute(
+        Cron cron, ZonedDateTime date, boolean forward) {
+        while (!cron.minSpec.isMatch(date)) {
+            date = date.plusMinutes(forward ? 1 : -1).withSecond(0).withNano(0);
+        }
+        return date;
+    }
+
+    private static ZonedDateTime getExecutionDateDirection(
+        Cron cron, ZonedDateTime date, boolean forward) {
+
+        // if we are right on an execution date right now, we'll return the next one.
+        if (cron.isMatch(date)) {
+            date = date.plusMinutes(forward ? 1 : -1).withSecond(0).withNano(0);
+        }
+
+        // re-do the global matching
+        // as we may change days even after going out of getNextMatchingDay
+        // eg cron tuesdays at 10am, date at 11am. Day will match but adding
+        // hours will cause us to move to the next day. We then find a matching
+        // hour, but the day doesn't match anymore!
         while (!cron.isMatch(date)) {
-            date = date.plusMinutes(increment).withSecond(0).withNano(0);
+            date = getNextMatchingDay(cron, date, forward);
+            date = getNextMatchingHour(cron, date, forward);
+            date = getNextMatchingMinute(cron, date, forward);
         }
         return date;
     }
