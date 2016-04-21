@@ -111,8 +111,7 @@ public class Cron
      * Note that it will return true only if given the
      * exact date and time, with the second and millisecond
      * both set to 0.
-     * See also
-     * {@link CronExecution#gapToClosestExecution}
+     * @see CronExecution#gapToClosestExecution
      * @param dateTime the date time to test
      * @return true if the cron would execute at that dateTime
      */
