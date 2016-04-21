@@ -96,7 +96,7 @@ public class ExecutionDateTest {
 
     @Test
     public void gapToClosestOnItExceptMillis() {
-        assertEquals(Duration.ofHours(23).plusMinutes(59).plusSeconds(59).plusMillis(645), CronExecution.gapToClosestExecution(
+        assertEquals(Duration.ofMillis(355), CronExecution.gapToClosestExecution(
                          Cron.parseCronString("0 7 * * 1,2,3,4,5,6,7").get(),
                          ZonedDateTime.parse("2016-04-21T07:00:00.355-07:00[America/Los_Angeles]")));
     }
@@ -108,5 +108,14 @@ public class ExecutionDateTest {
             CronExecution.getNextExecutionDate(
                 Cron.parseCronString("0 8 * * 1").get(),
                 ZonedDateTime.of(2014, 11, 30, 0, 0, 12, 0, ZoneId.of("UTC"))));
+    }
+
+    @Test
+    public void nextExecutionDateThereExceptForSeconds() {
+        assertEquals(
+            ZonedDateTime.of(2014, 12, 8, 8, 0, 0, 0, ZoneId.of("UTC")),
+            CronExecution.getNextExecutionDate(
+                Cron.parseCronString("0 8 * * 1").get(),
+                ZonedDateTime.of(2014, 12, 1, 8, 0, 12, 0, ZoneId.of("UTC"))));
     }
 }

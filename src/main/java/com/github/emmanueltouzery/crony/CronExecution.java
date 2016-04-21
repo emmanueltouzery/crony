@@ -105,7 +105,11 @@ public class CronExecution {
         while (!(cron.minSpec.isMatch(date)
                  && date.getSecond() == 0
                  && date.getNano() == 0)) {
-            date = date.plusMinutes(forward ? 1 : -1).withSecond(0).withNano(0);
+            if (!forward && date.getSecond() + date.getNano() > 0) {
+                date = date.withSecond(0).withNano(0);
+            } else {
+                date = date.plusMinutes(forward ? 1 : -1).withSecond(0).withNano(0);
+            }
         }
         return date;
     }
