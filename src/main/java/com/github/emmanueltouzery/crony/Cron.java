@@ -107,7 +107,12 @@ public class Cron
     /**
      * Will return true if the date time given is a match
      * for this cron specification (in other words if
-     * execution would trigger at that exact date and time)
+     * execution would trigger at that exact date and time).
+     * Note that it will return true only if given the
+     * exact date and time, with the second and millisecond
+     * both set to 0.
+     * See also
+     * {@link CronExecution#gapToClosestExecution}
      * @param dateTime the date time to test
      * @return true if the cron would execute at that dateTime
      */
