@@ -128,6 +128,13 @@ public class CronExecution {
         // hours will cause us to move to the next day. We then find a matching
         // hour, but the day doesn't match anymore!
         while (!cron.isMatch(date)) {
+            // TODO it's kind of failed because we make an effort
+            // not to just brute force add minutes one by one.
+            // But when we make a stream for the next X ones,
+            // we start from a minute previous/after the previous one.
+            // Which means 99% of the time, the day will match,
+            // the hour will match, just the minute will fail,
+            // and we'll end up adding minutes one by one...
             date = getNextMatchingDay(cron, date, forward);
             date = getNextMatchingHour(cron, date, forward);
             date = getNextMatchingMinute(cron, date, forward);
