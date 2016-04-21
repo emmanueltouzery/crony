@@ -102,7 +102,9 @@ public class CronExecution {
 
     private static ZonedDateTime getNextMatchingMinute(
         Cron cron, ZonedDateTime date, boolean forward) {
-        while (!cron.minSpec.isMatch(date)) {
+        while (!(cron.minSpec.isMatch(date)
+                 && date.getSecond() == 0
+                 && date.getNano() == 0)) {
             date = date.plusMinutes(forward ? 1 : -1).withSecond(0).withNano(0);
         }
         return date;

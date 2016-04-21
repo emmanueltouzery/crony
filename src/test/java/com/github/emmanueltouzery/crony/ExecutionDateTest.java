@@ -30,7 +30,7 @@ public class ExecutionDateTest {
     }
 
     @Test
-    public void nextExecutionDatePastLess1h() {
+    public void previousExecutionDatePastLess1h() {
         assertEquals(
             ZonedDateTime.of(2014, 4, 21, 10, 15, 0, 0, ZoneId.of("UTC")),
             CronExecution.getPreviousExecutionDate(
@@ -92,6 +92,13 @@ public class ExecutionDateTest {
         assertEquals(Duration.ZERO, CronExecution.gapToClosestExecution(
                          Cron.parseCronString("0 6,8 * * 1").get(),
                          ZonedDateTime.of(2014, 12, 1, 6, 0, 0, 0, ZoneId.of("UTC"))));
+    }
+
+    @Test
+    public void gapToClosestOnItExceptMillis() {
+        assertEquals(Duration.ofHours(23).plusMinutes(59).plusSeconds(59).plusMillis(645), CronExecution.gapToClosestExecution(
+                         Cron.parseCronString("0 7 * * 1,2,3,4,5,6,7").get(),
+                         ZonedDateTime.parse("2016-04-21T07:00:00.355-07:00[America/Los_Angeles]")));
     }
 
     @Test
