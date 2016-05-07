@@ -5,6 +5,9 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import javaslang.collection.List;
+import javaslang.test.Arbitrary;
+import javaslang.test.Gen;
+import javaslang.test.Property;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
@@ -117,5 +120,50 @@ public class ExecutionDateTest {
             CronExecution.getNextExecutionDate(
                 Cron.parseCronString("0 8 * * 1").get(),
                 ZonedDateTime.of(2014, 12, 1, 8, 0, 12, 0, ZoneId.of("UTC"))));
+    }
+
+    @Test
+    public void nextExecutionDateSameAsFirstOfStream() {
+        Cron cron = Cron.parseCronString("0 8 * * 1").get();
+        ZonedDateTime startDate = ZonedDateTime.of(2014, 12, 1, 8, 0, 12, 0, ZoneId.of("UTC"));
+        assertEquals(
+            CronExecution.getNextExecutionDates(cron, startDate).head(),
+            CronExecution.getNextExecutionDate(cron, startDate));
+    }
+
+    @Test
+    public void previousNextIsSymetrical() {
+        Arbitrary<ZonedDateTime> dates = CronyArbitrary.zonedDateTime(
+            CronyArbitrary.RangeType.Reasonnable);
+        Arbitrary<Cron> crons = CronyArbitrary.cron();
+        Property.def("previousExec(m) plus previousExec(n-1) on top of nextExec(m+n) on an execution date is a NOP")
+            .forAll(dates, crons, Gen.choose(0, 100).arbitrary(), Gen.choose(1, 100).arbitrary())
+            .suchThat((date, cron, m, n) -> {
+                    ZonedDateTime init = CronExecution.getNextExecutionDate(cron, date);
+                    ZonedDateTime next = CronExecution.getNextExecutionDates(cron, init).get(m+n);
+                    ZonedDateTime previous1 = CronExecution.getPreviousExecutionDates(cron, next).get(m);
+                    ZonedDateTime previous2 = CronExecution.getPreviousExecutionDates(cron, previous1).get(n-1);
+                    return previous2.equals(init);
+                })
+            .check()
+            .assertIsSatisfied();
+    }
+
+    @Test
+    public void nextExecutionDateIsOnExecDate() {
+        Arbitrary<ZonedDateTime> dates = CronyArbitrary.zonedDateTime(
+            CronyArbitrary.RangeType.Reasonnable);
+        Arbitrary<Cron> crons = CronyArbitrary.cron();
+
+        Property.def("nextExec() and previousExec() are on an execution date")
+            .forAll(dates, crons)
+            .suchThat((date, cron) -> {
+                    ZonedDateTime next = CronExecution.getNextExecutionDate(cron, date);
+                    ZonedDateTime previous = CronExecution.getPreviousExecutionDate(cron, date);
+                    return CronExecution.gapToClosestExecution(cron, next).equals(Duration.ZERO) &&
+                        CronExecution.gapToClosestExecution(cron, previous).equals(Duration.ZERO);
+                })
+            .check()
+            .assertIsSatisfied();
     }
 }
