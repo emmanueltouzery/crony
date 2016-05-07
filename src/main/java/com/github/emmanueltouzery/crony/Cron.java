@@ -104,6 +104,11 @@ public class Cron
             .mkString(" ");
     }
 
+    @Override
+    public String toString() {
+        return toCronString();
+    }
+
     /**
      * Will return true if the date time given is a match
      * for this cron specification (in other words if
