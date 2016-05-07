@@ -82,36 +82,43 @@ public class CronExecution {
 
     private static ZonedDateTime getNextMatchingDay(
         Cron cron, ZonedDateTime date, boolean forward) {
-        while (!cron.isDayMatch(date)) {
-            date = forward
-                ? date.plusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0)
-                : date.plusDays(-1).withHour(23).withMinute(59).withSecond(0).withNano(0);
+        ZonedDateTime curDate = date;
+        while (!cron.isDayMatch(curDate)) {
+            curDate = forward
+                ? curDate.plusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0)
+                : curDate.plusDays(-1).withHour(23).withMinute(59).withSecond(0).withNano(0);
         }
-        return date;
+        return curDate;
     }
 
-    private static ZonedDateTime getNextMatchingHour(
+    private static ZonedDateTime testNextHours(
         Cron cron, ZonedDateTime date, boolean forward) {
-        while (!cron.hourSpec.isMatch(date)) {
-            date = forward
-                ? date.plusHours(1).withMinute(0).withSecond(0).withNano(0)
-                : date.plusHours(-1).withMinute(59).withSecond(0).withNano(0);
+        ZonedDateTime curDate = date;
+        // make sure to stay within the same day
+        while (!cron.hourSpec.isMatch(curDate)
+               && curDate.toLocalDate().equals(date.toLocalDate())) {
+            curDate = forward
+                ? curDate.plusHours(1).withMinute(0).withSecond(0).withNano(0)
+                : curDate.plusHours(-1).withMinute(59).withSecond(0).withNano(0);
         }
-        return date;
+        return curDate;
     }
 
-    private static ZonedDateTime getNextMatchingMinute(
+    private static ZonedDateTime testNextMinutes(
         Cron cron, ZonedDateTime date, boolean forward) {
-        while (!(cron.minSpec.isMatch(date)
-                 && date.getSecond() == 0
-                 && date.getNano() == 0)) {
-            if (!forward && date.getSecond() + date.getNano() > 0) {
-                date = date.withSecond(0).withNano(0);
+        ZonedDateTime curDate = date;
+        // make sure to stay within the same hour
+        while (!(cron.minSpec.isMatch(curDate)
+                 && curDate.getSecond() == 0
+                 && curDate.getNano() == 0)
+               && curDate.getHour() == date.getHour()) {
+            if (!forward && curDate.getSecond() + curDate.getNano() > 0) {
+                curDate = curDate.withSecond(0).withNano(0);
             } else {
-                date = date.plusMinutes(forward ? 1 : -1).withSecond(0).withNano(0);
+                curDate = curDate.plusMinutes(forward ? 1 : -1).withSecond(0).withNano(0);
             }
         }
-        return date;
+        return curDate;
     }
 
     private static ZonedDateTime getExecutionDateDirection(
@@ -122,22 +129,17 @@ public class CronExecution {
             date = date.plusMinutes(forward ? 1 : -1).withSecond(0).withNano(0);
         }
 
-        // re-do the global matching
-        // as we may change days even after going out of getNextMatchingDay
-        // eg cron tuesdays at 10am, date at 11am. Day will match but adding
-        // hours will cause us to move to the next day. We then find a matching
-        // hour, but the day doesn't match anymore!
         while (!cron.isMatch(date)) {
-            // TODO it's kind of failed because we make an effort
-            // not to just brute force add minutes one by one.
-            // But when we make a stream for the next X ones,
+            // we make an effort not to just brute force add minutes one by one.
+            // Notice the special case, when we make a stream for the next X ones,
             // we start from a minute previous/after the previous one.
             // Which means 99% of the time, the day will match,
             // the hour will match, just the minute will fail,
-            // and we'll end up adding minutes one by one...
+            // we add minutes at first, but then actually reset
+            // back to adding days if needed.
             date = getNextMatchingDay(cron, date, forward);
-            date = getNextMatchingHour(cron, date, forward);
-            date = getNextMatchingMinute(cron, date, forward);
+            date = testNextHours(cron, date, forward);
+            date = testNextMinutes(cron, date, forward);
         }
         return date;
     }
