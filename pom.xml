@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.emmanueltouzery</groupId>
     <artifactId>crony</artifactId>
-    <version>1.0.6-SNAPSHOT</version>
+    <version>1.0.6</version>
     <name>crony</name>
     <description>A java library to work with cron specifications</description>
     <url>https://github.com/emmanueltouzery/crony</url>
@@ -32,7 +32,7 @@
         <connection>scm:git:git@github.com:emmanueltouzery/crony.git</connection>
         <developerConnection>scm:git:git@github.com:emmanueltouzery/crony.git</developerConnection>
         <url>git@github.com:emmanueltouzery/crony.git</url>
-      <tag>HEAD</tag>
+      <tag>crony-1.0.6</tag>
   </scm>
     <dependencies>
         <dependency>
