@@ -1,6 +1,7 @@
 package com.github.emmanueltouzery.crony;
 
 import javaslang.Function1;
+import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.collection.HashMap;
 import javaslang.collection.HashSet;
@@ -40,7 +41,7 @@ import javaslang.control.Validation;
     private static Validation<String, Tuple2<Integer,Integer>> parseRange(String rangeStr) {
         return Javaslang.splitValidate(rangeStr, "-", 2)
             .flatMap(elements -> Javaslang.tryValidation(
-                         () -> new Tuple2<>(Integer.parseInt(elements[0]), Integer.parseInt(elements[1])),
+                         () -> Tuple.of(Integer.parseInt(elements[0]), Integer.parseInt(elements[1])),
                          "Invalid range, one item is not a number: " + rangeStr));
     }
 
@@ -55,10 +56,10 @@ import javaslang.control.Validation;
         if (rangeString.contains("-")) {
             return parseRange(rangeString);
         } else if (rangeString.equals("*")) {
-            return Validation.valid(new Tuple2<>(0, maxValue));
+            return Validation.valid(Tuple.of(0, maxValue));
         } else {
             return Javaslang.validationParseInt(rangeString)
-                .map(s -> new Tuple2<>(s, maxValue));
+                .map(s -> Tuple.of(s, maxValue));
         }
     }
 }
