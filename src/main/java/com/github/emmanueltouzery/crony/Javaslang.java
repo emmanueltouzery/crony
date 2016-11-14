@@ -10,13 +10,8 @@ import javaslang.control.Validation;
 /*package*/ class Javaslang {
 
     private static <T, U> Function1<Try<U>, Validation<T, U>> tryToValidation(T left) {
-        return tryValue -> {
-            if (tryValue.isSuccess()) {
-                return Validation.valid(tryValue.get());
-            } else {
-                return Validation.invalid(left);
-            }
-        };
+        return tryValue ->
+            Validation.fromEither(tryValue.toEither().mapLeft(x -> left));
     }
 
     public static <E, T> Validation<E,T> tryValidation(Try.CheckedSupplier<? extends T> supplier, E left) {
