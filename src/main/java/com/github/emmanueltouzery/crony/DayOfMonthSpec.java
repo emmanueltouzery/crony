@@ -16,7 +16,7 @@ public class DayOfMonthSpec {
      * Value for the special cron constant "last day of month" (encoded in the
      * cron format with a 'L').
      * When you build a {@link DayOfMonthSpec} using {@link DayOfMonthSpec#build},
-     * you must give a {@link vavr.collection.Set} of integers.
+     * you must give a {@link io.vavr.collection.Set} of integers.
      * You can use this constant to specify the last day of month (note: most
      * cron implementations don't support this feature)
      */
