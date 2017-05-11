@@ -1,5 +1,7 @@
 # Crony
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.emmanueltouzery/crony/badge.png)](https://maven-badges.herokuapp.com/maven-central/com.github.emmanueltouzery/crony)
+
 Crony is a library to deal with cron scheduler specifictions in java. It can parse cron specifications, calculate dates of execution, and also programmatically create cron specifications and save them back to cron format strings.
 
 [Online Javadoc](http://emmanueltouzery.github.io/crony/apidocs/)
@@ -10,7 +12,7 @@ Crony is available on maven-central:
 <dependency>
     <groupId>com.github.emmanueltouzery</groupId>
     <artifactId>crony</artifactId>
-    <version>1.0.6</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
