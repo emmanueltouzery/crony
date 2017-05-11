@@ -4,8 +4,8 @@ import java.time.DayOfWeek;
 import java.time.Month;
 import java.util.function.Supplier;
 
-import javaslang.collection.HashSet;
-import javaslang.control.Validation;
+import io.vavr.collection.HashSet;
+import io.vavr.control.Validation;
 
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;

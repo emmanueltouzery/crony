@@ -3,13 +3,13 @@ package com.github.emmanueltouzery.crony;
 import java.time.Month;
 import java.time.ZonedDateTime;
 
-import javaslang.Function1;
-import javaslang.collection.Array;
-import javaslang.collection.Map;
-import javaslang.collection.Seq;
-import javaslang.collection.Set;
-import javaslang.collection.Stream;
-import javaslang.control.Validation;
+import io.vavr.Function1;
+import io.vavr.collection.Array;
+import io.vavr.collection.Map;
+import io.vavr.collection.Seq;
+import io.vavr.collection.Set;
+import io.vavr.collection.Stream;
+import io.vavr.control.Validation;
 
 /**
  * Part of the cron specification describing the month of the year.
@@ -43,10 +43,10 @@ public class MonthSpec {
 
     /*package*/ static Validation<String, MonthSpec> parse(String cronSpec) {
         Function1<Integer, Validation<String, Month>> parseMonth = item ->
-            Javaslang.tryValidation(() -> Month.of(item),
+            Vavr.tryValidation(() -> Month.of(item),
                                     String.format("Invalid month: %d", item));
         return SpecItemParser.parseSpecItem(cronSpec.toLowerCase(), 12, monthMap)
-            .flatMap(intSet -> Javaslang.sequenceS(intSet.map(parseMonth)))
+            .flatMap(intSet -> Vavr.sequenceS(intSet.map(parseMonth)))
             .map(Seq::toSet)
             .flatMap(MonthSpec::build);
     }

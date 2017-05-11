@@ -3,13 +3,13 @@ package com.github.emmanueltouzery.crony;
 import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
 
-import javaslang.Function1;
-import javaslang.collection.Array;
-import javaslang.collection.Map;
-import javaslang.collection.Seq;
-import javaslang.collection.Set;
-import javaslang.collection.Stream;
-import javaslang.control.Validation;
+import io.vavr.Function1;
+import io.vavr.collection.Array;
+import io.vavr.collection.Map;
+import io.vavr.collection.Seq;
+import io.vavr.collection.Set;
+import io.vavr.collection.Stream;
+import io.vavr.control.Validation;
 
 /**
  * Part of the cron specification describing the day of the week.
@@ -43,10 +43,10 @@ public class DayOfWeekSpec {
 
     /*package*/ static Validation<String, DayOfWeekSpec> parse(String cronSpec) {
         Function1<Integer, Validation<String, DayOfWeek>> parseDow = item ->
-            Javaslang.tryValidation(() -> item == 0 ? DayOfWeek.SUNDAY : DayOfWeek.of(item),
+            Vavr.tryValidation(() -> item == 0 ? DayOfWeek.SUNDAY : DayOfWeek.of(item),
                                     String.format("Invalid day of week: %d", item));
         return SpecItemParser.parseSpecItem(cronSpec.toLowerCase(), 7, dayMap)
-            .flatMap(intSet -> Javaslang.sequenceS(intSet.map(parseDow)))
+            .flatMap(intSet -> Vavr.sequenceS(intSet.map(parseDow)))
             .map(Seq::toSet)
             .flatMap(DayOfWeekSpec::build);
     }

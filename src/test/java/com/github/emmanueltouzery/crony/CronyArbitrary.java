@@ -2,10 +2,10 @@ package com.github.emmanueltouzery.crony;
 
 import java.time.*;
 
-import javaslang.collection.Set;
-import javaslang.collection.List;
-import javaslang.test.Arbitrary;
-import javaslang.test.Gen;
+import io.vavr.collection.Set;
+import io.vavr.collection.List;
+import io.vavr.test.Arbitrary;
+import io.vavr.test.Gen;
 
 public class CronyArbitrary {
 

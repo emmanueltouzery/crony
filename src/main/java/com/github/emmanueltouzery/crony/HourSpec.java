@@ -2,8 +2,8 @@ package com.github.emmanueltouzery.crony;
 
 import java.time.ZonedDateTime;
 
-import javaslang.collection.Set;
-import javaslang.control.Validation;
+import io.vavr.collection.Set;
+import io.vavr.control.Validation;
 
 /**
  * Part of the cron specification describing the hour of the day.

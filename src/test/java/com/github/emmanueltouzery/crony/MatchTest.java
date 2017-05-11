@@ -3,7 +3,7 @@ package com.github.emmanueltouzery.crony;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import javaslang.collection.HashSet;
+import io.vavr.collection.HashSet;
 
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;

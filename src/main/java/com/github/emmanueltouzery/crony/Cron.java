@@ -4,9 +4,9 @@ import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
 import java.time.Month;
 
-import javaslang.collection.List;
-import javaslang.collection.Set;
-import javaslang.control.Validation;
+import io.vavr.collection.List;
+import io.vavr.collection.Set;
+import io.vavr.control.Validation;
 
 /**
  * The cron class represents a cron specification.
@@ -70,7 +70,7 @@ public class Cron
             DayOfMonthSpec.build(daysOfMonth),
             MonthSpec.build(months),
             DayOfWeekSpec.build(daysOfWeek))
-            .ap(Cron::new).leftMap(l -> l.mkString(", "));
+            .ap(Cron::new).mapError(l -> l.mkString(", "));
     }
 
     /**
@@ -79,7 +79,7 @@ public class Cron
      * @return a Cron object or an error message
      */
     public static Validation<String, Cron> parseCronString(String cronString) {
-        return Javaslang.splitValidate(cronString, " ", 5)
+        return Vavr.splitValidate(cronString, " ", 5)
             .flatMap(pieces ->
                      Validation.combine(
                          MinSpec.parse(pieces[0]),
@@ -87,7 +87,7 @@ public class Cron
                          DayOfMonthSpec.parse(pieces[2]),
                          MonthSpec.parse(pieces[3]),
                          DayOfWeekSpec.parse(pieces[4]))
-                     .ap(Cron::new).leftMap(l -> l.mkString(", ")));
+                     .ap(Cron::new).mapError(l -> l.mkString(", ")));
     }
 
     /**

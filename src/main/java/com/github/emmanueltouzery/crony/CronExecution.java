@@ -3,7 +3,7 @@ package com.github.emmanueltouzery.crony;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
-import javaslang.collection.Stream;
+import io.vavr.collection.Stream;
 
 /**
  * Retrieve information regarding the execution dates of
@@ -14,7 +14,7 @@ public class CronExecution {
     /**
      * Get an infinite stream of the next execution dates after a date you give
      * for a cron specification.
-     * You can use {@link javaslang.collection.Stream#take} to retrieve a limited
+     * You can use {@link vavr.collection.Stream#take} to retrieve a limited
      * number of elements.
      * @param cron the cron specification
      * @param base the date to start from
@@ -39,7 +39,7 @@ public class CronExecution {
     /**
      * Get an infinite stream of the previous execution dates before a date you give
      * for a cron specification.
-     * You can use {@link javaslang.collection.Stream#take} to retrieve a limited
+     * You can use {@link vavr.collection.Stream#take} to retrieve a limited
      * number of elements.
      * @param cron the cron specification
      * @param base the date to start from
