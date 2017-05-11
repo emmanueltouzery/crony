@@ -8,6 +8,7 @@ import io.vavr.collection.HashSet;
 import io.vavr.collection.Map;
 import io.vavr.collection.Set;
 import io.vavr.control.Validation;
+import io.vavr.control.Try;
 
 // parsing with jparsec would be neater, but it's such a small-scale
 // parsing, it would be a shame to incur a dependency for that.
@@ -40,9 +41,9 @@ import io.vavr.control.Validation;
 
     private static Validation<String, Tuple2<Integer,Integer>> parseRange(String rangeStr) {
         return Vavr.splitValidate(rangeStr, "-", 2)
-            .flatMap(elements -> Vavr.tryValidation(
-                         () -> Tuple.of(Integer.parseInt(elements[0]), Integer.parseInt(elements[1])),
-                         "Invalid range, one item is not a number: " + rangeStr));
+            .flatMap(elements -> Try.of(
+                             () -> Tuple.of(Integer.parseInt(elements[0]), Integer.parseInt(elements[1])))
+                     .toValidation("Invalid range, one item is not a number: " + rangeStr));
     }
 
     private static Validation<String, Set<Integer>> parseSlash(String value, int maxValue) {

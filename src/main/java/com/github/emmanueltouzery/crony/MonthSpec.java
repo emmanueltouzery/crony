@@ -10,6 +10,7 @@ import io.vavr.collection.Seq;
 import io.vavr.collection.Set;
 import io.vavr.collection.Stream;
 import io.vavr.control.Validation;
+import io.vavr.control.Try;
 
 /**
  * Part of the cron specification describing the month of the year.
@@ -43,8 +44,8 @@ public class MonthSpec {
 
     /*package*/ static Validation<String, MonthSpec> parse(String cronSpec) {
         Function1<Integer, Validation<String, Month>> parseMonth = item ->
-            Vavr.tryValidation(() -> Month.of(item),
-                                    String.format("Invalid month: %d", item));
+            Try.of(() -> Month.of(item))
+            .toValidation(String.format("Invalid month: %d", item));
         return SpecItemParser.parseSpecItem(cronSpec.toLowerCase(), 12, monthMap)
             .flatMap(intSet -> Vavr.sequenceS(intSet.map(parseMonth)))
             .map(Seq::toSet)

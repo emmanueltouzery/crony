@@ -10,15 +10,6 @@ import io.vavr.control.Validation;
 
 /*package*/ class Vavr {
 
-    private static <T, U> Function1<Try<U>, Validation<T, U>> tryToValidation(T left) {
-        return tryValue ->
-            Validation.fromEither(tryValue.toEither().mapLeft(x -> left));
-    }
-
-    public static <E, T> Validation<E,T> tryValidation(CheckedFunction0<? extends T> supplier, E left) {
-        return Try.of(supplier).transform(Vavr.tryToValidation(left));
-    }
-
     public static <T> Validation<String, Seq<T>> sequenceS(Traversable<Validation<String, T>> items) {
         Traversable<Validation<Seq<String>, T>> items2 = items.map(v -> v.mapError(List::of));
         return Validation.sequence(items2).mapError(l -> l.mkString(", "));
@@ -33,7 +24,7 @@ import io.vavr.control.Validation;
     }
 
     public static Validation<String, Integer> validationParseInt(String value) {
-        return tryValidation(() -> Integer.parseInt(value),
-                             String.format("Error parsing %s as integer.", value));
+        return Try.of(() -> Integer.parseInt(value))
+            .toValidation(String.format("Error parsing %s as integer.", value));
     }
 }

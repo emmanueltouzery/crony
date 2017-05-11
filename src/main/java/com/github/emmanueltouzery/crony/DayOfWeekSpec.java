@@ -10,6 +10,7 @@ import io.vavr.collection.Seq;
 import io.vavr.collection.Set;
 import io.vavr.collection.Stream;
 import io.vavr.control.Validation;
+import io.vavr.control.Try;
 
 /**
  * Part of the cron specification describing the day of the week.
@@ -43,8 +44,8 @@ public class DayOfWeekSpec {
 
     /*package*/ static Validation<String, DayOfWeekSpec> parse(String cronSpec) {
         Function1<Integer, Validation<String, DayOfWeek>> parseDow = item ->
-            Vavr.tryValidation(() -> item == 0 ? DayOfWeek.SUNDAY : DayOfWeek.of(item),
-                                    String.format("Invalid day of week: %d", item));
+            Try.of(() -> item == 0 ? DayOfWeek.SUNDAY : DayOfWeek.of(item))
+            .toValidation(String.format("Invalid day of week: %d", item));
         return SpecItemParser.parseSpecItem(cronSpec.toLowerCase(), 7, dayMap)
             .flatMap(intSet -> Vavr.sequenceS(intSet.map(parseDow)))
             .map(Seq::toSet)
